@@ -32,7 +32,6 @@ from data_validation import *
 from data_load import *
 
 
-
 if __name__ == '__main__':
 
     # Read arguments and configurations and initialize
@@ -70,7 +69,6 @@ if __name__ == '__main__':
                 # Initial message consumption may take up to
                 # `session.timeout.ms` for the consumer group to
                 # rebalance and start consuming
-               
                 timeout = 10
                 if flag == 0:
                     print("Waiting for message or event/error in poll()")
@@ -102,7 +100,6 @@ if __name__ == '__main__':
                     stopevent_list.append(data)
                     total_count += 1
                     #print("Consumed record with value {}.format(data))
-
     except KeyboardInterrupt:
         pass
     finally:
@@ -111,6 +108,5 @@ if __name__ == '__main__':
             se_json_data = json.dumps(stopevent_list, indent=4)
             validate(bc_json_data, se_json_data)
             #postgres()
-        
         # Leave group and commit final offsets
         consumer.close()

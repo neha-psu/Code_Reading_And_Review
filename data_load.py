@@ -20,7 +20,6 @@ CreateDB = False  # indicates whether the DB table should be (re)-created
 # create the target table 
 # assumes that conn is a valid, open connection to a Postgres database
 def createTable(conn):
-
 	with conn.cursor() as cursor:
 		cursor.execute(f"""
             DROP TABLE IF EXISTS {TableName2} CASCADE;
@@ -29,7 +28,6 @@ def createTable(conn):
             DROP TYPE IF EXISTS tripdir_type;
             create type service_type as enum ('Weekday', 'Saturday', 'Sunday');
             create type tripdir_type as enum ('Out', 'Back');
-
             create table {TableName2} (
             trip_id integer,
             vehicle_id integer,
@@ -47,16 +45,12 @@ def createTable(conn):
             trip_id integer,
             FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
             );
-
-
         """)
-
 	print(f"Created {TableName1}")
 	print(f"Created {TableName2}")
 
 # connect to the database
 def dbconnect():
-
     connection = psycopg2.connect(
         host="localhost",
         database=DBname,
@@ -67,7 +61,6 @@ def dbconnect():
     return connection
     
 def load(conn, csvfile, table):
-
 	with conn.cursor() as cursor:
 		start = time.perf_counter()
 		cursor.copy_from(csvfile, table, sep=",", null='None')

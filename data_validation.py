@@ -57,17 +57,14 @@ def existence_assertion(df, case_num, flag = None):
         if (invalid_record_count > 0 and output == False):
             print("--------------Summary ASSERTION VOILATION!! trip ID should be not null and",\
                     "unique value----------")
-      
         elif (invalid_record_count == 0 and output == False):
             print("--------------SUMMARY ASSERTION VOILATION!! trip ID should be unique value"\
                     "----------")
             df = df.drop_duplicates()
-
         elif (invalid_record_count > 0 and output == True):
             print("--------------EXISTENCE ASSERTION VOILATION!! trip ID should not be NOT",\
                     "NULL value----------")
             print("Count of invalid records: ", invalid_record_count)
-
         else:
             print("All the records passed Case {} check!".format(case_num))
     
@@ -110,7 +107,8 @@ def limit_assertion(df, case_num):
         else:
             #print("--------------Invalid!! records with Wrong Direction-------------")
             df = df.drop(df.index[item])
-            invalid_record_count +=1
+            invalid_record_count += 1
+
     if(invalid_record_count ==0):
         print("All the records passed Case {} check!".format(case_num))
     else:
@@ -151,13 +149,13 @@ def limit_assertion(df, case_num):
             #be between 0 and 12-------------")
             df =df.drop(df.index[item])
             invalid_record_count +=1
+
     if(invalid_record_count ==0):
         print("All the records passed Case {} check!".format(case_num))
     else:
         print("--------------LIMIT ASSERTION VOILATION!! The number of satellites for",\
                 "breadcrumb record should be between 0 and 12----------")
         print("Count of invalid records: ", invalid_record_count)
-
 
     return df, case_num
 
@@ -271,7 +269,6 @@ def referential_integrity(df, case_num, flag = None):
                 "empty speed when the direction is non-zero ---------")
         print("Count of invalid records: ", invalid_record_count2) 
 
-
   return df, case_num
 
 def validate(bc_json_data, se_json_data):
@@ -350,7 +347,6 @@ def validate(bc_json_data, se_json_data):
     Breadcrumbdf['latitude'] = Breadcrumbdf['latitude'].astype(float)
     Breadcrumbdf['longitude'] = Breadcrumbdf['longitude'].astype(float)
     
-    
     Breadcrumbdf['speed'] = Breadcrumbdf['speed']*2.23694 # change speed from m/s to miles/hr
     
     case_num = 0
@@ -372,7 +368,6 @@ def validate(bc_json_data, se_json_data):
     tripdf = Breadcrumbdf.filter(['trip_id', 'vehicle_id'])
     Breadcrumbdf = Breadcrumbdf.drop("vehicle_id", axis = 1)
     Breadcrumbdf.drop(columns=['GPS_SATELLITES'],inplace=True, axis=1)
-
     tripdf["direction"] = 'Out'
     tripdf["service_key"] = 'Weekday'
     tripdf["route_id"] = np.nan

@@ -96,5 +96,4 @@ if __name__ == '__main__':
         producer.poll(0)
         
     producer.flush()
-
     print("{} messages were produced to topic {}!".format(delivered_records, topic))
