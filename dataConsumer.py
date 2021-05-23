@@ -22,12 +22,15 @@
 #
 # =============================================================================
 
-from confluent_kafka import Consumer
 import json
+import time
+
+from confluent_kafka import Consumer
 import ccloud_lib
+
 from data_validation import *
 from data_load import *
-import time
+
 
 
 if __name__ == '__main__':

@@ -1,9 +1,10 @@
+import sys
 import time
-import psycopg2.extras
 import argparse
 import re
 import csv
-import sys
+
+import psycopg2.extras
 import pandas as pd
 import numpy as np
 

@@ -7,15 +7,17 @@ Original file is located at
     https://colab.research.google.com/drive/1AyTzIM8J8Dtm9Hf7pjuDCOme-0rSgUxh
 """
 
-import json 
-import csv 
-import pandas as pd
-import numpy as np
 import sys
 import math
+import json 
+import csv 
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta
+
+import pandas as pd
+import numpy as np
+
 
 def existence_assertion(df, case_num, flag = None):
     '''

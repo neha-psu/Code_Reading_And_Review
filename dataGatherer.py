@@ -1,7 +1,7 @@
-from urllib.request import urlopen
 import json
 from datetime import date
 
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 ###### Breadcrumb DATA ######

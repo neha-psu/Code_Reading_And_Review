@@ -22,12 +22,14 @@
 #
 # =============================================================================
 
-from confluent_kafka import Producer, KafkaError
 import json
-import ccloud_lib
-import urllib.request
 from time import sleep
 import random
+
+from confluent_kafka import Producer, KafkaError
+import ccloud_lib
+import urllib.request
+
 
 def produce_breadcrumb_records():
     pass
