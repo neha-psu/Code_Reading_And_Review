@@ -9,9 +9,9 @@ breadcrumb_url = "http://rbi.ddns.net/getBreadCrumbData"
 response = urlopen(breadcrumb_url)
 data = json.loads(response.read().decode('utf-8'))
 dt = date.today()
-date='/home/agrawal/examples/clients/cloud/python/sensor_data/'+str(dt)+'.json'
+date = '/home/agrawal/examples/clients/cloud/python/sensor_data/'+str(dt)+'.json'
 with open(date, 'w') as file:
-    json.dump(data, file, indent=2)
+    json.dump(data, file, indent = 2)
 
 ########## STOP EVENT DATA #######
 stop_event_url = "http://rbi.ddns.net/getStopEvents"
@@ -19,7 +19,7 @@ html = urlopen(stop_event_url)
 soup = BeautifulSoup(html, 'lxml')
 h3 = soup.find_all('h3')
 
-trip_id_h3 =[]
+trip_id_h3 = []
 for i in h3:
     str_h3 = str(i)
     cleantext = BeautifulSoup(str_h3, "lxml").get_text()
@@ -27,9 +27,9 @@ for i in h3:
     
 trip_id = []
 for i in trip_id_h3:
-    x  = i.split(" ")
+    x = i.split(" ")
     #print(x)
-    trip_id_num =  int(x[4])
+    trip_id_num = int(x[4])
     trip_id.append(trip_id_num)
 
 tables = soup.find_all('table')
@@ -95,4 +95,4 @@ for table in tables:
 
 fname = '/home/agrawal/examples/clients/cloud/python/stop_event/'+str(dt)+'.json'
 with open(fname, 'w') as file:
-    json.dump(stop_event, file, indent =2)    
+    json.dump(stop_event, file, indent = 2)    
