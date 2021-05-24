@@ -14,8 +14,6 @@ DBpwd = "postgres"
 TableName1 = 'BreadCrumb'
 TableName2 = 'Trip'
 CreateDB = False  # indicates whether the DB table should be (re)-created
-#tmp_df1 = "/home/agrawal/examples/client/cloud/python/trip.csv"
-#tmp_df2 = "/home/agrawal/examples/client/cloud/python/breadcrumb.csv"
 
 # create the target table 
 # assumes that conn is a valid, open connection to a Postgres database

@@ -34,7 +34,6 @@ def existence_assertion(df, case_num, flag = None):
         invalid_record_count = 0
         for item, data in enumerate(df['vehicle_id']):
             if( math.isnan(data)):
-                #df = df.drop(df.index[item])    
                 invalid_record_count += 1
 
         if (invalid_record_count == 0):
@@ -51,7 +50,6 @@ def existence_assertion(df, case_num, flag = None):
         output = pd.Series(df['trip_id']).is_unique
         for item, data in enumerate(df['trip_id']):
             if( math.isnan(data)):
-                #df = df.drop(df.index[item])    
                 invalid_record_count += 1
 
         if (invalid_record_count > 0 and output == False):
@@ -75,7 +73,6 @@ def existence_assertion(df, case_num, flag = None):
         invalid_record_count = 0
         for item, data in enumerate(df['tstamp']):
             if( pd.isnull(data)):
-                #df = df.drop(df.index[item])    
                 invalid_record_count += 1
       
         if (invalid_record_count == 0):
@@ -105,7 +102,6 @@ def limit_assertion(df, case_num):
         elif(data>=0 and data<=359):
             pass
         else:
-            #print("--------------Invalid!! records with Wrong Direction-------------")
             df = df.drop(df.index[item])
             invalid_record_count += 1
 
@@ -124,7 +120,6 @@ def limit_assertion(df, case_num):
         if(data<=250 or pd.isnull(data)):
             pass
         else:
-            #print("--------------Invalid!! records with speed greater than 250 miles/hr-----------")
             df = df.drop(df.index[item])
             invalid_record_count +=1
     if(invalid_record_count ==0):
@@ -144,9 +139,6 @@ def limit_assertion(df, case_num):
         elif(data>=0 and data<=12):
             pass
         else:
-            #print(data)
-            #print("--------------Invalid!! The number of satellites for breadcrumb record should 
-            #be between 0 and 12-------------")
             df =df.drop(df.index[item])
             invalid_record_count +=1
 
@@ -179,13 +171,9 @@ def summary_assertions(df, case_num):
             continue
         else:
             if val in unique:
-                #print("--------------SUMMARY ASSERTION violation!! Combination of trip id and tstamp 
-                #should be unique-----------")
                 duplicate+=1
             else:
                 unique.add(val)
-    # print("Null entries : ",nan_values)
-    # print("Invalid entries : ",duplicate)
     if duplicate==0:
         print("All the records passed Case {} check!".format(case_num))
     else:
@@ -202,7 +190,6 @@ def referential_integrity(df, case_num, flag = None):
   direction field and vice-versa
   '''
   if flag == 0:
-    #do assertion 7
     case_num = case_num+1
     invalid_record_count = 0
     print("\n=====================REFRENTIAL INTEGRITY VALIDATIONS=================="\
@@ -248,15 +235,9 @@ def referential_integrity(df, case_num, flag = None):
             if(pd.notnull(direction)):
                 pass
             else:
-                #print("--------------Invalid!! records with empty Direction when the speed 
-                #is non-zero-------------")
-                #df = df.drop(df.index[item])
                 invalid_record_count1 +=1
         else:
             if(pd.notnull(direction)):
-                #print("--------------Invalid!! records with empty speed when the direction 
-                #is non-zero-------------")
-                #df.drop(df.index[item])
                 invalid_record_count2 +=1
     if(invalid_record_count1 ==0 and invalid_record_count2 == 0):
         print("All the records passed Case {} check!".format(case_num)) 
@@ -281,13 +262,6 @@ def validate(bc_json_data, se_json_data):
     df1 = pd.read_json(se_json_data)
     print("\n===================================DATA VALIDATION AND TRANSFORMATION"\
             "====================================\n")
-    #columns to extract in new dataframes:
-    '''
-    BreadCrumb : {(OPD_DATE,act_time) -> tstamp, longitude, latitude, direction, speed, 
-    trip_id(F.K)}
-    trip: {trip_id (P.K), route_id (all NULL), vehicle_id, service_key (all NULL), 
-    direction(all NULL -> 0,1)}
-    '''
 
     # TRANSFORMATION 1 : Extract specific selected columns to new DataFrame as a copy
     Breadcrumbdf = df.filter(['OPD_DATE','ACT_TIME','GPS_LATITUDE','GPS_LONGITUDE', \
@@ -328,8 +302,6 @@ def validate(bc_json_data, se_json_data):
     # TRANSFORNATION 4 : Drop the "OPD_DATE, ACT_TIME" and insert "tstamp" into Breadcrumb data
     Breadcrumbdf.insert(0, "tstamp", timestamps)
     Breadcrumbdf.drop(columns=['OPD_DATE','ACT_TIME'],inplace=True, axis=1)
-
-    #df['DIRECTION'] = df['DIRECTION'].fillna(0)
 
     # TRANSFORMATION 5: Rename all the columns of the dataframe to match the schema
     Breadcrumbdf = Breadcrumbdf.rename(columns={"EVENT_NO_TRIP": "trip_id", \
@@ -375,12 +347,6 @@ def validate(bc_json_data, se_json_data):
     #tripdf["service_key"] = tripdf["service_key"].astype(str)
     tripdf["route_id"] = tripdf["route_id"].astype('Int32')
 
-    # print(Breadcrumbdf.dtypes)
-    #print("\n",Breadcrumbdf.head())
-
-    # print("\n Trip:", tripdf.dtypes)
-    #print("\n",tripdf.head())
-
     # TRANSFORMATION 4 : Change the value of direction to out and back if its 0 and 1 respectively
     for index in range(len(stopdf['direction'])):
         if stopdf['direction'][index]=='1':
@@ -421,7 +387,6 @@ def validate(bc_json_data, se_json_data):
     finaldf = finaldf.drop_duplicates()
     newdf=tripdf.merge(stopdf, on=['trip_id','vehicle_id'], how='left')
     newdf = newdf.drop(newdf.columns[[2, 3, 4]], axis=1) 
-    #print(newdf)
     
     # CONVERT THE DATAFRAMES INTO CSVs
     Breadcrumbdf.to_csv('Breadcrumbdf.csv',index=False, header=False,na_rep='None')
