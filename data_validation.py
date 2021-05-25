@@ -389,5 +389,3 @@ def validate(bc_json_data, se_json_data):
     Breadcrumbdf.to_csv('Breadcrumbdf.csv', index = False, header = False, na_rep = 'None')
     newdf.to_csv('tripdf.csv', index = False, header = False, na_rep = 'None')
 
-if __name__ == '__main__':
-    main()
