@@ -8,12 +8,12 @@ import psycopg2.extras
 import pandas as pd
 import numpy as np
 
-DBname = 'postgres'
-DBuser = 'postgres'
-DBpwd = 'postgres'
-TableName1 = 'BreadCrumb'
-TableName2 = 'Trip'
-CreateDB = False  # indicates whether the DB table should be (re)-created
+db_name = 'postgres'
+db_user = 'postgres'
+db_pwd = 'postgres'
+table_name1 = 'BreadCrumb'
+table_name2 = 'Trip'
+create_db = False  # indicates whether the DB table should be (re)-created
 
 def createTable(conn):
     """
@@ -23,13 +23,13 @@ def createTable(conn):
     """
     with conn.cursor() as cursor:
         cursor.execute(f"""
-            DROP TABLE IF EXISTS {TableName2} CASCADE;
-            DROP TABLE IF EXISTS {TableName1};
+            DROP TABLE IF EXISTS {table_name2} CASCADE;
+            DROP TABLE IF EXISTS {table_name1};
             DROP TYPE IF EXISTS service_type;
             DROP TYPE IF EXISTS tripdir_type;
             create type service_type as enum ('Weekday', 'Saturday', 'Sunday');
             create type tripdir_type as enum ('Out', 'Back');
-            create table {TableName2} (
+            create table {table_name2} (
             trip_id integer,
             vehicle_id integer,
             direction tripdir_type,
@@ -37,7 +37,7 @@ def createTable(conn):
             route_id integer,
             PRIMARY KEY (trip_id)
             );
-            create table {TableName1} (
+            create table {table_name1} (
             tstamp timestamp,
             latitude float,
             longitude float,
@@ -47,8 +47,8 @@ def createTable(conn):
             FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
             );
         """)
-    print(f'Created {TableName1}')
-    print(f'Created {TableName2}')
+    print(f'Created {table_name1}')
+    print(f'Created {table_name2}')
 
 def dbconnect():
     """
@@ -57,9 +57,9 @@ def dbconnect():
     """
     connection = psycopg2.connect(
         host = 'localhost',
-        database = DBname,
-        user = DBuser,
-        password = DBpwd,
+        database = db_name,
+        user = db_user,
+        password = db_pwd,
     )
     connection.autocommit = True
     return connection
@@ -86,8 +86,8 @@ def postgres():
     conn = dbconnect()
     csvfile1 = open('Breadcrumbdf.csv', 'r')
     csvfile2 = open('tripdf.csv', 'r')
-    if CreateDB:
+    if create_db:
         createTable(conn)
-    load(conn, csvfile2, TableName2)
-    load(conn, csvfile1, TableName1)
+    load(conn, csvfile2, table_name2)
+    load(conn, csvfile1, table_name1)
     
