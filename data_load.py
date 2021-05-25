@@ -18,7 +18,7 @@ CreateDB = False  # indicates whether the DB table should be (re)-created
 def createTable(conn):
     """
     Create the target table 
-    :param conn: open connection to a Postgres database (assumes that conn is a valid)
+    :param conn (object): open connection to a Postgres database (assumes that conn is a valid)
     :return: None
     """
     with conn.cursor() as cursor:
@@ -53,7 +53,7 @@ def createTable(conn):
 def dbconnect():
     """
     Connect to the Database
-    :return: connection to the DB server
+    :return connection (Object): connection to the DB server
     """
     connection = psycopg2.connect(
         host = "localhost",
@@ -67,9 +67,9 @@ def dbconnect():
 def load(conn, csvfile, table):
     """
     Load the csvfile to the Postgres table
-    :param conn: connection object creates a client session with the db server
-    :param csvfile: Input csvfile
-    :param table: postgres table
+    :param conn (Object): connection object creates a client session with the db server
+    :param csvfile (String): Name of the input csvfile
+    :param table (String): Name of the postgres table
     :return: None
     """
     with conn.cursor() as cursor:

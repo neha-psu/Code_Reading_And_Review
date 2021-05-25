@@ -64,8 +64,8 @@ if __name__ == '__main__':
         Optional per-message on_delivery handler (triggered by poll() or flush())
         when a message has been successfully delivered or
         permanently failed delivery (after retries).
-        :param err: error message in case of failed delivery
-        :param msg: successful delivery of the message
+        :param err (String): error message in case of failed delivery
+        :param msg (String): successful delivery of the message
         :return: None
         """
         global delivered_records
