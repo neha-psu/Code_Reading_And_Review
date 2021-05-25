@@ -273,7 +273,7 @@ def validate(bc_json_data, se_json_data):
         'SEP': '09',
         'OCT': '10',
         'NOV': '11',
-        'DEC': '12'
+        'DEC': '12',
         }
     for index in range(len(tstampdf['OPD_DATE'])):
         date = df['OPD_DATE'][index][0:2]
