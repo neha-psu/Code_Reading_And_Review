@@ -74,14 +74,14 @@ if __name__ == '__main__':
         successful or failed delivery of message
         """
         if err is not None:
-            print("Failed to deliver message: {}".format(err))
+            print('Failed to deliver message: {}'.format(err))
         else:
             delivered_records += 1
-            print("Produced record to topic " + str(msg.topic()) + " partition",\
-                    "[" + str(msg.partition()) + "] @ offset " + str(msg.offset()))
+            print('Produced record to topic ' + str(msg.topic()) + ' partition',\
+                    '[' + str(msg.partition()) + '] @ offset ' + str(msg.offset()))
         
     for val in breadcrumb_data:
-        record_key = "Breadcrumb"
+        record_key = 'Breadcrumb'
         record_value = json.dumps(val)
         producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         producer.poll(0)
 
     for val in stopEvent_data:
-        record_key = "stop_event"
+        record_key = 'stop_event'
         record_value = json.dumps(val)
         producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
@@ -97,4 +97,4 @@ if __name__ == '__main__':
         producer.poll(0)
         
     producer.flush()
-    print("{} messages were produced to topic {}!".format(delivered_records, topic))
+    print('{} messages were produced to topic {}!'.format(delivered_records, topic))

@@ -8,9 +8,9 @@ import psycopg2.extras
 import pandas as pd
 import numpy as np
 
-DBname = "postgres"
-DBuser = "postgres"
-DBpwd = "postgres"
+DBname = 'postgres'
+DBuser = 'postgres'
+DBpwd = 'postgres'
 TableName1 = 'BreadCrumb'
 TableName2 = 'Trip'
 CreateDB = False  # indicates whether the DB table should be (re)-created
@@ -47,8 +47,8 @@ def createTable(conn):
             FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
             );
         """)
-    print(f"Created {TableName1}")
-    print(f"Created {TableName2}")
+    print(f'Created {TableName1}')
+    print(f'Created {TableName2}')
 
 def dbconnect():
     """
@@ -56,7 +56,7 @@ def dbconnect():
     :return connection (Object): connection to the DB server
     """
     connection = psycopg2.connect(
-        host = "localhost",
+        host = 'localhost',
         database = DBname,
         user = DBuser,
         password = DBpwd,
@@ -74,7 +74,7 @@ def load(conn, csvfile, table):
     """
     with conn.cursor() as cursor:
         start = time.perf_counter()
-        cursor.copy_from(csvfile, table, sep = ",", null = 'None')
+        cursor.copy_from(csvfile, table, sep = ',', null = 'None')
         elapsed = time.perf_counter() - start
         print(f'Finished Loading. Elapsed Time: {elapsed:0.4} seconds')
         

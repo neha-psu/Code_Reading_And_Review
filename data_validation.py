@@ -13,32 +13,32 @@ import numpy as np
 
 
 def existence_assertion(df, case_num, flag=None):
-    '''
+    """
     Assertion 1: Every record of Trip table should have a valid not NULL vehicle id 
     Assertion 2 and 3: Every record of Trip table  should have a unique and not NULL trip id
     Assertion 4: Every Breadcrumb record should have a non empty tstamp field
-    '''
+    """
 
     if(flag == 0):
         case_num = case_num + 1
-        print("\n=====================EXISTENCE VALIDATIONS================================")
-        print("\n----- CASE " + str(case_num) + ": Every record of Trip table should have a valid",\
-                "not NULL vehicle id")
+        print('\n=====================EXISTENCE VALIDATIONS================================')
+        print('\n----- CASE ' + str(case_num) + ': Every record of Trip table should have a valid',\
+                'not NULL vehicle id')
         invalid_record_count = 0
         for item, data in enumerate(df['vehicle_id']):
             if(math.isnan(data)):   
                 invalid_record_count += 1
 
         if (invalid_record_count == 0):
-            print("All the records passed Case {} check!".format(case_num))
+            print('All the records passed Case {} check!'.format(case_num))
         else:
-            print("--------------EXISTENCE ASSERTION VOILATION!! Vehicle ID should not be NULL",\
-                    "for Trip records----------")
-            print("Count of invalid records: ", invalid_record_count)
+            print('--------------EXISTENCE ASSERTION VOILATION!! Vehicle ID should not be NULL',\
+                    'for Trip records----------')
+            print('Count of invalid records: ', invalid_record_count)
 
         case_num = case_num + 2
-        print("\n----- CASE " + str(case_num-1) + " & " + str(case_num) + ": Every record of Trip table",\
-	    "should have a unique and not NULL trip id")
+        print('\n----- CASE ' + str(case_num-1) + ' & ' + str(case_num) + ': Every record of Trip table',\
+	    'should have a unique and not NULL trip id')
         invalid_record_count = 0 
         output = pd.Series(df['trip_id']).is_unique
         for item, data in enumerate(df['trip_id']):
@@ -46,48 +46,48 @@ def existence_assertion(df, case_num, flag=None):
                 invalid_record_count += 1
 
         if (invalid_record_count > 0 and output == False):
-            print("--------------Summary ASSERTION VOILATION!! trip ID should be not null and",\
-                    "unique value----------")
+            print('--------------Summary ASSERTION VOILATION!! trip ID should be not null and',\
+                    'unique value----------')
         elif (invalid_record_count == 0 and output == False):
-            print("--------------SUMMARY ASSERTION VOILATION!! trip ID should be unique value"\
-                    "----------")
+            print('--------------SUMMARY ASSERTION VOILATION!! trip ID should be unique value'\
+                    '----------')
             df = df.drop_duplicates()
         elif (invalid_record_count > 0 and output == True):
-            print("--------------EXISTENCE ASSERTION VOILATION!! trip ID should not be NOT",\
-                    "NULL value----------")
-            print("Count of invalid records: ", invalid_record_count)
+            print('--------------EXISTENCE ASSERTION VOILATION!! trip ID should not be NOT',\
+                    'NULL value----------')
+            print('Count of invalid records: ', invalid_record_count)
         else:
-            print("All the records passed Case {} check!".format(case_num))
+            print('All the records passed Case {} check!'.format(case_num))
     
     if(flag == 1):
         case_num = case_num + 1
-        print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record should have a non empty",\
-                "tstamp field")
+        print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record should have a non empty',\
+                'tstamp field')
         invalid_record_count = 0
         for item, data in enumerate(df['tstamp']):
             if(pd.isnull(data)):
                 invalid_record_count += 1
       
         if (invalid_record_count == 0):
-            print("All the records passed Case {} check!".format(case_num))
+            print('All the records passed Case {} check!'.format(case_num))
         else:
-            print("--------------EXISTENCE ASSERTION VOILATION!! Every Breadcrumb record",\
-                    "should have a non empty tstamp field----------")
-            print("Count of invalid records: ", invalid_record_count)
+            print('--------------EXISTENCE ASSERTION VOILATION!! Every Breadcrumb record',\
+                    'should have a non empty tstamp field----------')
+            print('Count of invalid records: ', invalid_record_count)
 
     return df, case_num
 
 def limit_assertion(df, case_num):
-    '''
+    """
     Assertion 5: Direction for each breadcrumb record  should be between 0-359 inclusive
     Assertion 6: The speed field for each breadcrumb record should not exceed 250 miles/hr
     Assertion 7: The number of satellites for breadcrumb record should be between 0 and 12
-    '''
-    print("\n=====================LIMIT VALIDATIONS================================")
+    """
+    print('\n=====================LIMIT VALIDATIONS================================')
     
     case_num = case_num + 1
-    print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record should have",\
-            "Direction between 0-359 inclusive --------")
+    print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record should have',\
+            'Direction between 0-359 inclusive --------')
     invalid_record_count = 0
     for item, data in enumerate(df['direction']):
         if(pd.isnull(data)):
@@ -99,15 +99,15 @@ def limit_assertion(df, case_num):
             invalid_record_count += 1
 
     if(invalid_record_count == 0):
-        print("All the records passed Case {} check!".format(case_num))
+        print('All the records passed Case {} check!'.format(case_num))
     else:
-        print("--------------LIMIT ASSERTION VOILATION!! Direction should be between 0-359",\
-                "inclusive----------")
-        print("Count of invalid records: ", invalid_record_count)
+        print('--------------LIMIT ASSERTION VOILATION!! Direction should be between 0-359',\
+                'inclusive----------')
+        print('Count of invalid records: ', invalid_record_count)
     
     case_num = case_num + 1
-    print("\n----- CASE " + str(case_num) + ": The speed field for each breadcrumb record",\
-            "should not exceed 250 miles/hr--------")
+    print('\n----- CASE ' + str(case_num) + ': The speed field for each breadcrumb record',\
+            'should not exceed 250 miles/hr--------')
     invalid_record_count = 0
     for item, data in enumerate(df['speed']):
         if(data <= 250 or pd.isnull(data)):
@@ -116,15 +116,15 @@ def limit_assertion(df, case_num):
             df = df.drop(df.index[item])
             invalid_record_count += 1
     if(invalid_record_count == 0):
-        print("All the records passed Case {} check!".format(case_num))
+        print('All the records passed Case {} check!'.format(case_num))
     else:
-        print("--------------LIMIT ASSERTION VOILATION!! Speed shouldn't exceed 250",\
-                "miles/hr----------")
-        print("Count of invalid records: ", invalid_record_count)
+        print('--------------LIMIT ASSERTION VOILATION!! Speed shouldn"t exceed 250',\
+                'miles/hr----------')
+        print('Count of invalid records: ', invalid_record_count)
 
     case_num = case_num + 1
-    print("\n----- CASE " + str(case_num) + ": The number of satellites for breadcrumb record",\
-            "should be between 0 and 12--------")
+    print('\n----- CASE ' + str(case_num) + ': The number of satellites for breadcrumb record',\
+            'should be between 0 and 12--------')
     invalid_record_count = 0
     for item, data in enumerate(df['GPS_SATELLITES']):
         if(pd.isnull(data)):
@@ -136,23 +136,23 @@ def limit_assertion(df, case_num):
             invalid_record_count += 1
 
     if(invalid_record_count == 0):
-        print("All the records passed Case {} check!".format(case_num))
+        print('All the records passed Case {} check!'.format(case_num))
     else:
-        print("--------------LIMIT ASSERTION VOILATION!! The number of satellites for",\
-                "breadcrumb record should be between 0 and 12----------")
-        print("Count of invalid records: ", invalid_record_count)
+        print('--------------LIMIT ASSERTION VOILATION!! The number of satellites for',\
+                'breadcrumb record should be between 0 and 12----------')
+        print('Count of invalid records: ', invalid_record_count)
 
     return df, case_num
 
 def summary_assertions(df, case_num):
-    '''
+    """
     Assertion 8: Across all the Breadcrumb records, combination of trip id and tstamp 
     should be unique
-    '''
-    print("\n=====================SUMMARY VALIDATIONS================================")
+    """
+    print('\n=====================SUMMARY VALIDATIONS================================')
     case_num = case_num + 1
-    print("\n----- CASE " + str(case_num) + ": Every record of Breadcrumb should have unique",\
-            "combination of trip id and tstamp")
+    print('\n----- CASE ' + str(case_num) + ': Every record of Breadcrumb should have unique',\
+            'combination of trip id and tstamp')
     summary = list(zip(df['trip_id'], df['tstamp']))
     unique = set()
     duplicate = 0
@@ -169,28 +169,28 @@ def summary_assertions(df, case_num):
                 unique.add(val)
                 
     if duplicate == 0:
-        print("All the records passed Case {} check!".format(case_num))
+        print('All the records passed Case {} check!'.format(case_num))
     else:
-        print("--------------SUMMARY ASSERTION violation!! combination of trip id and tstamp",\
-                "should be unique----------")
-        print("Count of invalid records: ", duplicate)
+        print('--------------SUMMARY ASSERTION violation!! combination of trip id and tstamp',\
+                'should be unique----------')
+        print('Count of invalid records: ', duplicate)
 
     return df, case_num
 
 def referential_integrity(df, case_num, flag=None):
-  '''
+  """
   Assertion 9: For each vehicle id, there should be a generated  trip id - see the trip table
   Assertion 10: Each breadcrumb record with non zero speed field should have a non-zero
   direction field and vice-versa
-  '''
+  """
   if flag == 0:
     #do assertion 7
     case_num = case_num + 1
     invalid_record_count = 0
-    print("\n=====================REFRENTIAL INTEGRITY VALIDATIONS=================="\
-            "==============")
-    print("\n----- CASE " + str(case_num) + ": For each vehicle id, there should be a generated",\
-            "trip id----------")
+    print('\n=====================REFRENTIAL INTEGRITY VALIDATIONS=================='\
+            '==============')
+    print('\n----- CASE ' + str(case_num) + ': For each vehicle id, there should be a generated',\
+            'trip id----------')
     for item, row in df.iterrows():
         trip_id = row['trip_id']
         vehicle_id = row['vehicle_id']
@@ -200,16 +200,16 @@ def referential_integrity(df, case_num, flag=None):
             invalid_record_count += 1
         
     if invalid_record_count == 0:
-        print("All the records passed Case {} check!".format(case_num))
+        print('All the records passed Case {} check!'.format(case_num))
     else:
-        print("--------------REFRENTIAL INTEGRITY ASSERTION violation!!For each vehicle id,",\
-                "there should be a generated trip_id-----------")
-        print("Count of invalid records: ", invalid_record_count)
+        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!!For each vehicle id,',\
+                'there should be a generated trip_id-----------')
+        print('Count of invalid records: ', invalid_record_count)
   
   if flag == 1:
     case_num = case_num + 1
-    print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record with nofield should have",\
-            "an zero speed non-zero direction field and vice-versa --------")
+    print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record with nofield should have',\
+            'an zero speed non-zero direction field and vice-versa --------')
     invalid_record_count1 = 0
     invalid_record_count2 = 0
     for item, row in df.iterrows():
@@ -225,15 +225,15 @@ def referential_integrity(df, case_num, flag=None):
                 invalid_record_count2 += 1
     
     if(invalid_record_count1 == 0 and invalid_record_count2 == 0):
-        print("All the records passed Case {} check!".format(case_num)) 
+        print('All the records passed Case {} check!'.format(case_num)) 
     if(invalid_record_count1 > 0):
-        print("--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with",\
-                "empty Direction when the speed is non-zero ---------")
+        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
+                'empty Direction when the speed is non-zero ---------')
         print("Count of invalid records: ", invalid_record_count1) 
     if(invalid_record_count2 > 0):
-        print("--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with",\
-                "empty speed when the direction is non-zero ---------")
-        print("Count of invalid records: ", invalid_record_count2) 
+        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
+                'empty speed when the direction is non-zero ---------')
+        print('Count of invalid records: ', invalid_record_count2) 
 
   return df, case_num
 
@@ -245,8 +245,8 @@ def validate(bc_json_data, se_json_data):
     #Read the json file into the dataframe
     df = pd.read_json(bc_json_data)
     df1 = pd.read_json(se_json_data)
-    print("\n===================================DATA VALIDATION AND TRANSFORMATION"\
-            "====================================\n")
+    print('\n===================================DATA VALIDATION AND TRANSFORMATION'\
+            '====================================\n')
 
     # TRANSFORMATION 1 : Extract specific selected columns to new DataFrame as a copy
     Breadcrumbdf = df.filter(['OPD_DATE', 'ACT_TIME', 'GPS_LATITUDE', 'GPS_LONGITUDE', \
@@ -288,7 +288,7 @@ def validate(bc_json_data, se_json_data):
                     break
                 add_days += i
             date = int(date) + int(add_days)
-        str_time = re.sub("[^0-9:]", "", str_time)
+        str_time = re.sub('[^0-9:]', '', str_time)
         if len(str(date)) == 1:
             date = str(0) + str(date)
 
@@ -297,14 +297,14 @@ def validate(bc_json_data, se_json_data):
         timestamps.append(tstamp)
 
     # TRANSFORNATION 4 : Drop the "OPD_DATE, ACT_TIME" and insert "tstamp" into Breadcrumb data
-    Breadcrumbdf.insert(0, "tstamp", timestamps)
+    Breadcrumbdf.insert(0, 'tstamp', timestamps)
     Breadcrumbdf.drop(columns = ['OPD_DATE', 'ACT_TIME'], inplace = True, axis = 1)
 
     # TRANSFORMATION 5: Rename all the columns of the dataframe to match the schema
-    Breadcrumbdf = Breadcrumbdf.rename(columns = {"EVENT_NO_TRIP": "trip_id", \
-    "VELOCITY": "speed", "GPS_LONGITUDE": "longitude", "GPS_LATITUDE": "latitude", \
-    "DIRECTION": "direction", "VEHICLE_ID": "vehicle_id"})
-    stopdf = stopdf.rename(columns = {"vehicle_number": "vehicle_id", "route_number": "route_id"})
+    Breadcrumbdf = Breadcrumbdf.rename(columns = {'EVENT_NO_TRIP': 'trip_id', \
+    'VELOCITY': 'speed', 'GPS_LONGITUDE': 'longitude', 'GPS_LATITUDE': 'latitude', \
+    'DIRECTION': 'direction', 'VEHICLE_ID': 'vehicle_id'})
+    stopdf = stopdf.rename(columns = {'vehicle_number': 'vehicle_id', 'route_number': 'route_id'})
     
     # TRANSFORMATION 6 : Convert the Breadcrumb data fields to their respective data types 
     # defined in schema
@@ -326,23 +326,23 @@ def validate(bc_json_data, se_json_data):
     Breadcrumbdf = Breadcrumbdf.drop_duplicates()
     
     # TRANSFORMATION 4 : Convert the stop data fields to their respective data types defined in schema
-    stopdf["trip_id"] = stopdf["trip_id"].astype('Int32')
-    stopdf["vehicle_id"] = stopdf["vehicle_id"].astype('Int32')
-    stopdf["direction"] = stopdf["direction"].astype(str)
-    stopdf["service_key"] = stopdf["service_key"].astype(str)
-    stopdf["route_id"] = stopdf["route_id"].astype('Int32')
+    stopdf['trip_id'] = stopdf['trip_id'].astype('Int32')
+    stopdf['vehicle_id'] = stopdf['vehicle_id'].astype('Int32')
+    stopdf['direction'] = stopdf['direction'].astype(str)
+    stopdf['service_key'] = stopdf['service_key'].astype(str)
+    stopdf['route_id'] = stopdf['route_id'].astype('Int32')
 
     # TRANSFORMATION 7 : Create a separate view for TRIP DF and add the route_id, service_key 
     # and direction columns with NaN values.
     tripdf = Breadcrumbdf.filter(['trip_id', 'vehicle_id'])
     Breadcrumbdf = Breadcrumbdf.drop("vehicle_id", axis = 1)
     Breadcrumbdf.drop(columns = ['GPS_SATELLITES'], inplace = True, axis = 1)
-    tripdf["direction"] = 'Out'
-    tripdf["service_key"] = 'Weekday'
-    tripdf["route_id"] = np.nan
+    tripdf['direction'] = 'Out'
+    tripdf['service_key'] = 'Weekday'
+    tripdf['route_id'] = np.nan
     #tripdf["direction"] = tripdf["direction"].astype('Int32')
     #tripdf["service_key"] = tripdf["service_key"].astype(str)
-    tripdf["route_id"] = tripdf["route_id"].astype('Int32')
+    tripdf['route_id'] = tripdf['route_id'].astype('Int32')
 
     # TRANSFORMATION 4 : Change the value of direction to out and back if its 0 and 1 respectively
     for index in range(len(stopdf['direction'])):
@@ -367,9 +367,9 @@ def validate(bc_json_data, se_json_data):
     tripdf, case_num = existence_assertion(tripdf, case_num, flag = 0) # assertions 1 & 2 & 3
     tripdf, case_num = referential_integrity(tripdf, case_num, flag = 0) # assertion 9
     
-    #print("\n=====================VALIDATIONS================================")
-    print("\n=====================For each trip id, we have a single route no, service key",\
-            "and direction============")
+    #print('\n=====================VALIDATIONS================================')
+    print('\n=====================For each trip id, we have a single route no, service key',\
+            'and direction============')
     groupby_trip = stopdf.groupby('trip_id')
     groups = groupby_trip.groups.keys()
     column_names = ['trip_id', 'vehicle_id', 'route_id', 'direction', 'service_key'] 
@@ -389,5 +389,5 @@ def validate(bc_json_data, se_json_data):
     Breadcrumbdf.to_csv('Breadcrumbdf.csv', index = False, header = False, na_rep = 'None')
     newdf.to_csv('tripdf.csv', index = False, header = False, na_rep = 'None')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
