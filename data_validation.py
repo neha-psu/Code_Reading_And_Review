@@ -45,14 +45,14 @@ def existence_assertion(df, case_num, flag=None):
             if(math.isnan(data)):
                 invalid_record_count += 1
 
-        if (invalid_record_count > 0 and output == False):
+        if (invalid_record_count > 0 and not output):
             print('--------------Summary ASSERTION VOILATION!! trip ID should be not null and',\
                     'unique value----------')
-        elif (invalid_record_count == 0 and output == False):
+        elif (invalid_record_count == 0 and not output):
             print('--------------SUMMARY ASSERTION VOILATION!! trip ID should be unique value'\
                     '----------')
             df = df.drop_duplicates()
-        elif (invalid_record_count > 0 and output == True):
+        elif (invalid_record_count > 0 and output):
             print('--------------EXISTENCE ASSERTION VOILATION!! trip ID should not be NOT',\
                     'NULL value----------')
             print('Count of invalid records: ', invalid_record_count)
