@@ -38,7 +38,7 @@ for table in tables:
     trip = trip_id[0]
     trip_id = trip_id[1:]
     rows = table.find_all('tr')
-    if(flag == 0):
+    if flag == 0:
         row_th = rows[0].find_all('th')
         str_cells = str(row_th)
         header = BeautifulSoup(str_cells, 'lxml').get_text()
