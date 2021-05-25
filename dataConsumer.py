@@ -60,7 +60,7 @@ if __name__ == '__main__':
     total_count = 0
     breadcrumb_list = []
     stopevent_list = []
-    flag =0
+    flag = 0
     try:
         while True:
             msg = consumer.poll(1.0)
@@ -103,8 +103,8 @@ if __name__ == '__main__':
         pass
     finally:
         if breadcrumb_list or stopevent_list:
-            bc_json_data = json.dumps(breadcrumb_list, indent=4)
-            se_json_data = json.dumps(stopevent_list, indent=4)
+            bc_json_data = json.dumps(breadcrumb_list, indent = 4)
+            se_json_data = json.dumps(stopevent_list, indent = 4)
             validate(bc_json_data, se_json_data)
             postgres()
         # Leave group and commit final offsets

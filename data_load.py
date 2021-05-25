@@ -50,10 +50,10 @@ def createTable(conn):
 # connect to the database
 def dbconnect():
     connection = psycopg2.connect(
-        host="localhost",
-        database=DBname,
-        user=DBuser,
-        password=DBpwd,
+        host = "localhost",
+        database = DBname,
+        user = DBuser,
+        password = DBpwd,
     )
     connection.autocommit = True
     return connection
@@ -61,7 +61,7 @@ def dbconnect():
 def load(conn, csvfile, table):
 	with conn.cursor() as cursor:
 		start = time.perf_counter()
-		cursor.copy_from(csvfile, table, sep=",", null='None')
+		cursor.copy_from(csvfile, table, sep = ",", null = 'None')
 		elapsed = time.perf_counter() - start
 		print(f'Finished Loading. Elapsed Time: {elapsed:0.4} seconds')
         
