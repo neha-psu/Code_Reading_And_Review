@@ -75,8 +75,8 @@ if __name__ == '__main__':
             print("Failed to deliver message: {}".format(err))
         else:
             delivered_records += 1
-            print("Produced record to topic "+str(msg.topic())+" partition",\
-                    "["+str(msg.partition())+"] @ offset "+str(msg.offset()))
+            print("Produced record to topic " + str(msg.topic()) + " partition",\
+                    "[" + str(msg.partition()) + "] @ offset " + str(msg.offset()))
         
     for val in breadcrumb_data:
         record_key = "Breadcrumb"

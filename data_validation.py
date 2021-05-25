@@ -22,7 +22,7 @@ def existence_assertion(df, case_num, flag=None):
     if(flag == 0):
         case_num = case_num + 1
         print("\n=====================EXISTENCE VALIDATIONS================================")
-        print("\n----- CASE "+str(case_num)+": Every record of Trip table should have a valid",\
+        print("\n----- CASE " + str(case_num) + ": Every record of Trip table should have a valid",\
                 "not NULL vehicle id")
         invalid_record_count = 0
         for item, data in enumerate(df['vehicle_id']):
@@ -37,7 +37,7 @@ def existence_assertion(df, case_num, flag=None):
             print("Count of invalid records: ", invalid_record_count)
 
         case_num = case_num + 2
-        print("\n----- CASE "+str(case_num-1)+" & "+str(case_num)+": Every record of Trip table",\
+        print("\n----- CASE " + str(case_num-1) + " & " + str(case_num) + ": Every record of Trip table",\
 	    "should have a unique and not NULL trip id")
         invalid_record_count = 0 
         output = pd.Series(df['trip_id']).is_unique
@@ -61,7 +61,7 @@ def existence_assertion(df, case_num, flag=None):
     
     if(flag == 1):
         case_num = case_num + 1
-        print("\n----- CASE "+str(case_num)+": Every Breadcrumb record should have a non empty",\
+        print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record should have a non empty",\
                 "tstamp field")
         invalid_record_count = 0
         for item, data in enumerate(df['tstamp']):
@@ -86,7 +86,7 @@ def limit_assertion(df, case_num):
     print("\n=====================LIMIT VALIDATIONS================================")
     
     case_num = case_num + 1
-    print("\n----- CASE "+str(case_num)+": Every Breadcrumb record should have",\
+    print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record should have",\
             "Direction between 0-359 inclusive --------")
     invalid_record_count = 0
     for item, data in enumerate(df['direction']):
@@ -106,7 +106,7 @@ def limit_assertion(df, case_num):
         print("Count of invalid records: ", invalid_record_count)
     
     case_num = case_num + 1
-    print("\n----- CASE "+str(case_num)+": The speed field for each breadcrumb record",\
+    print("\n----- CASE " + str(case_num) + ": The speed field for each breadcrumb record",\
             "should not exceed 250 miles/hr--------")
     invalid_record_count = 0
     for item, data in enumerate(df['speed']):
@@ -123,7 +123,7 @@ def limit_assertion(df, case_num):
         print("Count of invalid records: ", invalid_record_count)
 
     case_num = case_num + 1
-    print("\n----- CASE "+str(case_num)+": The number of satellites for breadcrumb record",\
+    print("\n----- CASE " + str(case_num) + ": The number of satellites for breadcrumb record",\
             "should be between 0 and 12--------")
     invalid_record_count = 0
     for item, data in enumerate(df['GPS_SATELLITES']):
@@ -151,7 +151,7 @@ def summary_assertions(df, case_num):
     '''
     print("\n=====================SUMMARY VALIDATIONS================================")
     case_num = case_num + 1
-    print("\n----- CASE "+str(case_num)+": Every record of Breadcrumb should have unique",\
+    print("\n----- CASE " + str(case_num) + ": Every record of Breadcrumb should have unique",\
             "combination of trip id and tstamp")
     summary = list(zip(df['trip_id'], df['tstamp']))
     unique = set()
@@ -189,7 +189,7 @@ def referential_integrity(df, case_num, flag=None):
     invalid_record_count = 0
     print("\n=====================REFRENTIAL INTEGRITY VALIDATIONS=================="\
             "==============")
-    print("\n----- CASE "+str(case_num)+": For each vehicle id, there should be a generated",\
+    print("\n----- CASE " + str(case_num) + ": For each vehicle id, there should be a generated",\
             "trip id----------")
     for item, row in df.iterrows():
         trip_id = row['trip_id']
@@ -208,7 +208,7 @@ def referential_integrity(df, case_num, flag=None):
   
   if flag == 1:
     case_num = case_num + 1
-    print("\n----- CASE "+str(case_num)+": Every Breadcrumb record with nofield should have",\
+    print("\n----- CASE " + str(case_num) + ": Every Breadcrumb record with nofield should have",\
             "an zero speed non-zero direction field and vice-versa --------")
     invalid_record_count1 = 0
     invalid_record_count2 = 0

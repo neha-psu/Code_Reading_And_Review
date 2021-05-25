@@ -9,7 +9,7 @@ breadcrumb_url = "http://rbi.ddns.net/getBreadCrumbData"
 response = urlopen(breadcrumb_url)
 data = json.loads(response.read().decode('utf-8'))
 dt = date.today()
-date = '/home/agrawal/examples/clients/cloud/python/sensor_data/'+str(dt)+'.json'
+date = '/home/agrawal/examples/clients/cloud/python/sensor_data/' + str(dt) + '.json'
 with open(date, 'w') as file:
     json.dump(data, file, indent = 2)
 
@@ -56,8 +56,8 @@ for table in tables:
         x = stop_event_rows[0].split("[")
         stop_event_rows[0] = x[1]
         size = len(stop_event_rows)
-        x = stop_event_rows[size-1].split("]")
-        stop_event_rows[size-1] = x[0]
+        x = stop_event_rows[size - 1].split("]")
+        stop_event_rows[size - 1] = x[0]
 
         for _ in range(len(stop_event_rows)):
             data = {}
