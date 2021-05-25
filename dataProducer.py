@@ -30,10 +30,6 @@ from confluent_kafka import Producer, KafkaError
 import ccloud_lib
 import urllib.request
 
-
-def produce_breadcrumb_records():
-    pass
-
 if __name__ == '__main__':
 
     # Read arguments and configurations and initialize
@@ -63,11 +59,17 @@ if __name__ == '__main__':
     with open(stopEvent_path) as file:
         stopEvent_data = json.load(file)
 
-    # Optional per-message on_delivery handler (triggered by poll() or flush())
-    # when a message has been successfully delivered or
-    # permanently failed delivery (after retries).
     def acked(err, msg):
+        """
+        Optional per-message on_delivery handler (triggered by poll() or flush())
+        when a message has been successfully delivered or
+        permanently failed delivery (after retries).
+        :param err: error message in case of failed delivery
+        :param msg: successful delivery of the message
+        :return: None
+        """
         global delivered_records
+
         """Delivery report handler called on
         successful or failed delivery of message
         """
