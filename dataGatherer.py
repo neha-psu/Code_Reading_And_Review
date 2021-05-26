@@ -38,7 +38,7 @@ for table in tables:
     trip = trip_id[0]
     trip_id = trip_id[1:]
     rows = table.find_all('tr')
-    if(flag == 0):
+    if flag == 0:
         row_th = rows[0].find_all('th')
         str_cells = str(row_th)
         header = BeautifulSoup(str_cells, 'lxml').get_text()
@@ -90,6 +90,6 @@ for table in tables:
             data = json.loads(json_str)
             stop_event.append(data)
 
-fname = '/home/agrawal/examples/clients/cloud/python/stop_event/'+str(dt)+'.json'
+fname = '/home/agrawal/examples/clients/cloud/python/stop_event/' + str(dt) + '.json'
 with open(fname, 'w') as file:
     json.dump(stop_event, file, indent = 2)    
