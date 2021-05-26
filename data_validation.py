@@ -21,7 +21,6 @@ def existence_assertion(df, case_num, flag=None):
 
     if flag == 0:
         case_num = case_num + 1
-        print('\n=====================EXISTENCE VALIDATIONS================================')
         print('\n----- CASE ' + str(case_num) + ': Every record of Trip table should have a valid',\
                 'not NULL vehicle id')
         invalid_record_count = 0
@@ -83,8 +82,6 @@ def limit_assertion(df, case_num):
     Assertion 6: The speed field for each breadcrumb record should not exceed 250 miles/hr
     Assertion 7: The number of satellites for breadcrumb record should be between 0 and 12
     """
-    print('\n=====================LIMIT VALIDATIONS================================')
-    
     case_num = case_num + 1
     print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record should have',\
             'Direction between 0-359 inclusive --------')
@@ -149,7 +146,6 @@ def summary_assertions(df, case_num):
     Assertion 8: Across all the Breadcrumb records, combination of trip id and tstamp 
     should be unique
     """
-    print('\n=====================SUMMARY VALIDATIONS================================')
     case_num = case_num + 1
     print('\n----- CASE ' + str(case_num) + ': Every record of Breadcrumb should have unique',\
             'combination of trip id and tstamp')
@@ -184,11 +180,8 @@ def referential_integrity(df, case_num, flag=None):
   direction field and vice-versa
   """
   if flag == 0:
-    #do assertion 7
     case_num = case_num + 1
     invalid_record_count = 0
-    print('\n=====================REFRENTIAL INTEGRITY VALIDATIONS=================='\
-            '==============')
     print('\n----- CASE ' + str(case_num) + ': For each vehicle id, there should be a generated',\
             'trip id----------')
     for item, row in df.iterrows():
@@ -367,7 +360,6 @@ def validate(bc_json_data, se_json_data):
     tripdf, case_num = existence_assertion(tripdf, case_num, flag = 0) # assertions 1 & 2 & 3
     tripdf, case_num = referential_integrity(tripdf, case_num, flag = 0) # assertion 9
     
-    #print('\n=====================VALIDATIONS================================')
     print('\n=====================For each trip id, we have a single route no, service key',\
             'and direction============')
     groupby_trip = stopdf.groupby('trip_id')
