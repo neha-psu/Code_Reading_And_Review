@@ -42,7 +42,7 @@ def existence_assertion(df, case_num, flag=None):
 
         case_num = case_num + 2
         print('\n----- CASE ' + str(case_num-1) + ' & ' + str(case_num) + ': Every record of Trip table',\
-	    'should have a unique and not NULL trip id')
+	            'should have a unique and not NULL trip id')
         invalid_record_count = 0 
         output = pd.Series(df['trip_id']).is_unique
         for item, data in enumerate(df['trip_id']):
@@ -249,7 +249,6 @@ def referential_integrity(df, case_num, flag=None):
     return df, case_num
 
 def validate(bc_json_data, se_json_data):
-
     """
     This is the entry point to this file.
     It performs all the required transformations in the breadcrumb and stop event csv files 

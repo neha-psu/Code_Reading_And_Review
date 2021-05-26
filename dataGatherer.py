@@ -90,6 +90,6 @@ for table in tables:
             data = json.loads(json_str)
             stop_event.append(data)
 
-fname = '/home/agrawal/examples/clients/cloud/python/stop_event/'+str(dt)+'.json'
+fname = '/home/agrawal/examples/clients/cloud/python/stop_event/' + str(dt) + '.json'
 with open(fname, 'w') as file:
     json.dump(stop_event, file, indent = 2)    
