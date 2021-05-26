@@ -55,9 +55,9 @@ if __name__ == '__main__':
     with open(breadcrumb_path) as file:
         breadcrumb_data = json.load(file)
         
-    stopEvent_path = '/home/agrawal/examples/clients/cloud/python/stop_event/2021-02-05.json'
-    with open(stopEvent_path) as file:
-        stopEvent_data = json.load(file)
+    stop_event_path = '/home/agrawal/examples/clients/cloud/python/stop_event/2021-02-05.json'
+    with open(stop_event_path) as file:
+        stop_event_data = json.load(file)
 
     def acked(err, msg):
         """
@@ -88,7 +88,7 @@ if __name__ == '__main__':
         # from previous produce() calls.
         producer.poll(0)
 
-    for val in stopEvent_data:
+    for val in stop_event_data:
         record_key = 'stop_event'
         record_value = json.dumps(val)
         producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)

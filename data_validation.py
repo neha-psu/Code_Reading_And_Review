@@ -249,17 +249,17 @@ def validate(bc_json_data, se_json_data):
             '====================================\n')
 
     # TRANSFORMATION 1 : Extract specific selected columns to new DataFrame as a copy
-    Breadcrumbdf = df.filter(['OPD_DATE', 'ACT_TIME', 'GPS_LATITUDE', 'GPS_LONGITUDE', \
+    breadcrumb_df = df.filter(['OPD_DATE', 'ACT_TIME', 'GPS_LATITUDE', 'GPS_LONGITUDE', \
     'DIRECTION', 'VELOCITY', 'EVENT_NO_TRIP', 'VEHICLE_ID', 'GPS_SATELLITES'], axis=1)
-    stopdf = df1.filter(['trip_id', 'vehicle_number', 'route_number', 'direction', 'service_key'], \
+    stop_df = df1.filter(['trip_id', 'vehicle_number', 'route_number', 'direction', 'service_key'], \
     axis=1)
     
     # TRANSFORMATION 2 : Replace all the empty fields by NaN
-    Breadcrumbdf = Breadcrumbdf.replace(r'^\s*$', np.nan, regex=True)
-    stopdf = stopdf.replace(r'^\s*$', np.nan, regex=True)
+    breadcrumb_df = breadcrumb_df.replace(r'^\s*$', np.nan, regex=True)
+    stop_df = stop_df.replace(r'^\s*$', np.nan, regex=True)
     
     # TRANSFORMATION 3 :  Concatenate OPD DATE and ACT TIME --> DATE TIME       
-    tstampdf = Breadcrumbdf.filter(['OPD_DATE', 'ACT_TIME'], axis=1)
+    tstamp_df = breadcrumb_df.filter(['OPD_DATE', 'ACT_TIME'], axis=1)
     timestamps = []
     dic = {
         'JAN': '01',
@@ -275,7 +275,7 @@ def validate(bc_json_data, se_json_data):
         'NOV': '11',
         'DEC': '12',
         }
-    for index in range(len(tstampdf['OPD_DATE'])):
+    for index in range(len(tstamp_df['OPD_DATE'])):
         date = df['OPD_DATE'][index][0:2]
         month = dic[df['OPD_DATE'][index][3:6]]
         year = df['OPD_DATE'][index][7:10]
@@ -297,97 +297,97 @@ def validate(bc_json_data, se_json_data):
         timestamps.append(tstamp)
 
     # TRANSFORNATION 4 : Drop the "OPD_DATE, ACT_TIME" and insert "tstamp" into Breadcrumb data
-    Breadcrumbdf.insert(0, 'tstamp', timestamps)
-    Breadcrumbdf.drop(columns = ['OPD_DATE', 'ACT_TIME'], inplace = True, axis = 1)
+    breadcrumb_df.insert(0, 'tstamp', timestamps)
+    breadcrumb_df.drop(columns = ['OPD_DATE', 'ACT_TIME'], inplace = True, axis = 1)
 
     # TRANSFORMATION 5: Rename all the columns of the dataframe to match the schema
-    Breadcrumbdf = Breadcrumbdf.rename(columns = {'EVENT_NO_TRIP': 'trip_id', \
+    breadcrumb_df = breadcrumb_df.rename(columns = {'EVENT_NO_TRIP': 'trip_id', \
     'VELOCITY': 'speed', 'GPS_LONGITUDE': 'longitude', 'GPS_LATITUDE': 'latitude', \
     'DIRECTION': 'direction', 'VEHICLE_ID': 'vehicle_id'})
-    stopdf = stopdf.rename(columns = {'vehicle_number': 'vehicle_id', 'route_number': 'route_id'})
+    stop_df = stop_df.rename(columns = {'vehicle_number': 'vehicle_id', 'route_number': 'route_id'})
     
     # TRANSFORMATION 6 : Convert the Breadcrumb data fields to their respective data types 
     # defined in schema
-    Breadcrumbdf['trip_id'] = Breadcrumbdf['trip_id'].astype('Int32')
-    Breadcrumbdf['vehicle_id'] = Breadcrumbdf['vehicle_id'].astype('Int32')
-    Breadcrumbdf['speed'] = Breadcrumbdf['speed'].astype(float)
-    Breadcrumbdf['GPS_SATELLITES'] = Breadcrumbdf['GPS_SATELLITES'].astype(float).astype('Int32')
-    Breadcrumbdf['direction'] = Breadcrumbdf['direction'].astype(float).astype('Int32')
-    Breadcrumbdf['latitude'] = Breadcrumbdf['latitude'].astype(float)
-    Breadcrumbdf['longitude'] = Breadcrumbdf['longitude'].astype(float)
+    breadcrumb_df['trip_id'] = breadcrumb_df['trip_id'].astype('Int32')
+    breadcrumb_df['vehicle_id'] = breadcrumb_df['vehicle_id'].astype('Int32')
+    breadcrumb_df['speed'] = breadcrumb_df['speed'].astype(float)
+    breadcrumb_df['GPS_SATELLITES'] = breadcrumb_df['GPS_SATELLITES'].astype(float).astype('Int32')
+    breadcrumb_df['direction'] = breadcrumb_df['direction'].astype(float).astype('Int32')
+    breadcrumb_df['latitude'] = breadcrumb_df['latitude'].astype(float)
+    breadcrumb_df['longitude'] = breadcrumb_df['longitude'].astype(float)
     
-    Breadcrumbdf['speed'] = Breadcrumbdf['speed']*2.23694 # change speed from m/s to miles/hr
+    breadcrumb_df['speed'] = breadcrumb_df['speed']*2.23694 # change speed from m/s to miles/hr
     
     case_num = 0
-    Breadcrumbdf, case_num = existence_assertion(Breadcrumbdf, case_num, flag = 1) # assertion 4
-    Breadcrumbdf, case_num = limit_assertion(Breadcrumbdf, case_num) # assertions 5 & 6 & 7
-    Breadcrumbdf, case_num = summary_assertions(Breadcrumbdf, case_num) #assertion 8
-    Breadcrumbdf, case_num = referential_integrity(Breadcrumbdf, case_num, flag = 1) # assertion 10
-    Breadcrumbdf = Breadcrumbdf.drop_duplicates()
+    breadcrumb_df, case_num = existence_assertion(breadcrumb_df, case_num, flag = 1) # assertion 4
+    breadcrumb_df, case_num = limit_assertion(breadcrumb_df, case_num) # assertions 5 & 6 & 7
+    breadcrumb_df, case_num = summary_assertions(breadcrumb_df, case_num) #assertion 8
+    breadcrumb_df, case_num = referential_integrity(breadcrumb_df, case_num, flag = 1) # assertion 10
+    breadcrumb_df = breadcrumb_df.drop_duplicates()
     
     # TRANSFORMATION 4 : Convert the stop data fields to their respective data types defined in schema
-    stopdf['trip_id'] = stopdf['trip_id'].astype('Int32')
-    stopdf['vehicle_id'] = stopdf['vehicle_id'].astype('Int32')
-    stopdf['direction'] = stopdf['direction'].astype(str)
-    stopdf['service_key'] = stopdf['service_key'].astype(str)
-    stopdf['route_id'] = stopdf['route_id'].astype('Int32')
+    stop_df['trip_id'] = stop_df['trip_id'].astype('Int32')
+    stop_df['vehicle_id'] = stop_df['vehicle_id'].astype('Int32')
+    stop_df['direction'] = stop_df['direction'].astype(str)
+    stop_df['service_key'] = stop_df['service_key'].astype(str)
+    stop_df['route_id'] = stop_df['route_id'].astype('Int32')
 
     # TRANSFORMATION 7 : Create a separate view for TRIP DF and add the route_id, service_key 
     # and direction columns with NaN values.
-    tripdf = Breadcrumbdf.filter(['trip_id', 'vehicle_id'])
-    Breadcrumbdf = Breadcrumbdf.drop("vehicle_id", axis = 1)
-    Breadcrumbdf.drop(columns = ['GPS_SATELLITES'], inplace = True, axis = 1)
-    tripdf['direction'] = 'Out'
-    tripdf['service_key'] = 'Weekday'
-    tripdf['route_id'] = np.nan
-    #tripdf["direction"] = tripdf["direction"].astype('Int32')
-    #tripdf["service_key"] = tripdf["service_key"].astype(str)
-    tripdf['route_id'] = tripdf['route_id'].astype('Int32')
+    trip_df = breadcrumb_df.filter(['trip_id', 'vehicle_id'])
+    breadcrumb_df = breadcrumb_df.drop("vehicle_id", axis = 1)
+    breadcrumb_df.drop(columns = ['GPS_SATELLITES'], inplace = True, axis = 1)
+    trip_df['direction'] = 'Out'
+    trip_df['service_key'] = 'Weekday'
+    trip_df['route_id'] = np.nan
+    #trip_df["direction"] = trip_df["direction"].astype('Int32')
+    #trip_df["service_key"] = trip_df["service_key"].astype(str)
+    trip_df['route_id'] = trip_df['route_id'].astype('Int32')
 
     # TRANSFORMATION 4 : Change the value of direction to out and back if its 0 and 1 respectively
-    for index in range(len(stopdf['direction'])):
-        if stopdf['direction'][index] == '1':
-            stopdf['direction'][index] = 'Out'
-        elif stopdf['direction'][index] == '0':
-            stopdf['direction'][index] = 'Back'
+    for index in range(len(stop_df['direction'])):
+        if stop_df['direction'][index] == '1':
+            stop_df['direction'][index] = 'Out'
+        elif stop_df['direction'][index] == '0':
+            stop_df['direction'][index] = 'Back'
         else:
-            stopdf['direction'][index] = 'DELETE'
+            stop_df['direction'][index] = 'DELETE'
 
     # TRANSFORMATION 5: Change W to Weekday, S to Saturday and U to Sunday
-    for index in range(len(stopdf['service_key'])):
-        if stopdf['service_key'][index] == 'W':
-            stopdf['service_key'][index] = 'Weekday'
-        elif stopdf['service_key'][index] == 'S':
-            stopdf['service_key'][index] = 'Saturday'
-        elif stopdf['service_key'][index] == 'U':
-            stopdf['service_key'][index] = 'Sunday'
+    for index in range(len(stop_df['service_key'])):
+        if stop_df['service_key'][index] == 'W':
+            stop_df['service_key'][index] = 'Weekday'
+        elif stop_df['service_key'][index] == 'S':
+            stop_df['service_key'][index] = 'Saturday'
+        elif stop_df['service_key'][index] == 'U':
+            stop_df['service_key'][index] = 'Sunday'
         else:
-          stopdf['service_key'][index] = 'DELETE'
+          stop_df['service_key'][index] = 'DELETE'
 
-    tripdf, case_num = existence_assertion(tripdf, case_num, flag = 0) # assertions 1 & 2 & 3
-    tripdf, case_num = referential_integrity(tripdf, case_num, flag = 0) # assertion 9
+    trip_df, case_num = existence_assertion(trip_df, case_num, flag = 0) # assertions 1 & 2 & 3
+    trip_df, case_num = referential_integrity(trip_df, case_num, flag = 0) # assertion 9
     
     #print('\n=====================VALIDATIONS================================')
     print('\n=====================For each trip id, we have a single route no, service key',\
             'and direction============')
-    groupby_trip = stopdf.groupby('trip_id')
+    groupby_trip = stop_df.groupby('trip_id')
     groups = groupby_trip.groups.keys()
     column_names = ['trip_id', 'vehicle_id', 'route_id', 'direction', 'service_key'] 
-    finaldf = pd.DataFrame(columns = column_names)
+    final_df = pd.DataFrame(columns = column_names)
     for group in groups:
         group_df = groupby_trip.get_group(group)
         groupby_labels = group_df.groupby(['route_id', 'direction', 'service_key'])
         size = max(groupby_labels.size())
         groupby_labels = groupby_labels.filter(lambda x: len(x) == size, dropna = True)
-        finaldf = finaldf.append(groupby_labels, ignore_index = True)
+        final_df = final_df.append(groupby_labels, ignore_index = True)
     
-    finaldf = finaldf.drop_duplicates()
-    newdf = tripdf.merge(stopdf, on = ['trip_id', 'vehicle_id'], how = 'left')
-    newdf = newdf.drop(newdf.columns[[2, 3, 4]], axis = 1) 
+    final_df = final_df.drop_duplicates()
+    new_df = trip_df.merge(stop_df, on = ['trip_id', 'vehicle_id'], how = 'left')
+    new_df = new_df.drop(new_df.columns[[2, 3, 4]], axis = 1) 
     
     # CONVERT THE DATAFRAMES INTO CSVs
-    Breadcrumbdf.to_csv('Breadcrumbdf.csv', index = False, header = False, na_rep = 'None')
-    newdf.to_csv('tripdf.csv', index = False, header = False, na_rep = 'None')
+    breadcrumb_df.to_csv('Breadcrumbdf.csv', index = False, header = False, na_rep = 'None')
+    new_df.to_csv('trip_df.csv', index = False, header = False, na_rep = 'None')
 
 if __name__ == '__main__':
     main()
