@@ -22,8 +22,8 @@ h3 = soup.find_all('h3')
 trip_id_h3 = []
 for i in h3:
     str_h3 = str(i)
-    cleantext = BeautifulSoup(str_h3, 'lxml').get_text()
-    trip_id_h3.append(cleantext)
+    clean_text = BeautifulSoup(str_h3, 'lxml').get_text()
+    trip_id_h3.append(clean_text)
     
 trip_id = []
 for i in trip_id_h3:
@@ -47,10 +47,10 @@ for table in tables:
     for row in rows[1:]:
         row_td = row.find_all('td')
         str_cells1 = str(row_td)
-        cleantext = BeautifulSoup(str_cells1, 'lxml').get_text()
+        clean_text = BeautifulSoup(str_cells1, 'lxml').get_text()
         
         # create a list from cleantext
-        stop_event_rows = cleantext.split(', ')
+        stop_event_rows = clean_text.split(', ')
         
         # strip '[' from first element of the list and ']' from the last element of the list
         x = stop_event_rows[0].split('[')

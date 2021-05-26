@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # Process messages
     total_count = 0
     breadcrumb_list = []
-    stopevent_list = []
+    stop_event_list = []
     flag = 0
     try:
         while True:
@@ -96,15 +96,15 @@ if __name__ == '__main__':
                 if record_key == 'stop_event':
                     record_value = msg.value().decode('utf-8')
                     data = json.loads(record_value)
-                    stopevent_list.append(data)
+                    stop_event_list.append(data)
                     total_count += 1
                     #print("Consumed record with value {}.format(data))
     except KeyboardInterrupt:
         pass
     finally:
-        if breadcrumb_list or stopevent_list:
+        if breadcrumb_list or stop_event_list:
             bc_json_data = json.dumps(breadcrumb_list, indent = 4)
-            se_json_data = json.dumps(stopevent_list, indent = 4)
+            se_json_data = json.dumps(stop_event_list, indent = 4)
             validate(bc_json_data, se_json_data)
             postgres()
         # Leave group and commit final offsets
