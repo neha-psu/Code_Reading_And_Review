@@ -18,7 +18,7 @@ create_db = False  # indicates whether the DB table should be (re)-created
 def createTable(conn):
     """
     Create the target table 
-    :param conn (object): open connection to a Postgres database (assumes that conn is a valid)
+    :param conn (Object): open connection to a Postgres database (assumes that conn is a valid)
     :return: None
     """
     with conn.cursor() as cursor:

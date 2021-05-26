@@ -17,6 +17,11 @@ def existence_assertion(df, case_num, flag=None):
     Assertion 1: Every record of Trip table should have a valid not NULL vehicle id 
     Assertion 2 and 3: Every record of Trip table  should have a unique and not NULL trip id
     Assertion 4: Every Breadcrumb record should have a non empty tstamp field
+    :param df (Object): Input dataframe to evaluate the existence assertion
+    :param case_num (Int): An integer to denote the case number
+    :param flag (Int): A binary integer to distinguish between breadcrumb and trip dataframes 
+    :return df (Object): Updated dataframe after deleting the invalid records
+    :return case_num (Int): Updated case number
     """
 
     if flag == 0:
@@ -81,6 +86,10 @@ def limit_assertion(df, case_num):
     Assertion 5: Direction for each breadcrumb record  should be between 0-359 inclusive
     Assertion 6: The speed field for each breadcrumb record should not exceed 250 miles/hr
     Assertion 7: The number of satellites for breadcrumb record should be between 0 and 12
+    :param df (Object): Input breadcrumb dataframe to evaluate the limit assertion
+    :param case_num (Int): An integer to denote the case number
+    :return df (Object): Updated breadcrumb dataframe after deleting the invalid records
+    :return case_num (Int): Updated case number
     """
     case_num = case_num + 1
     print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record should have',\
@@ -144,7 +153,11 @@ def limit_assertion(df, case_num):
 def summary_assertions(df, case_num):
     """
     Assertion 8: Across all the Breadcrumb records, combination of trip id and tstamp 
-    should be unique
+                    should be unique
+    :param df (Object): Input breadcrumb dataframe to evaluate the summary assertion
+    :param case_num (Int): An integer to denote the case number
+    :return df (Object): Updated breadcrumb dataframe after deleting the invalid records
+    :return case_num (Int): Updated case number    
     """
     case_num = case_num + 1
     print('\n----- CASE ' + str(case_num) + ': Every record of Breadcrumb should have unique',\
@@ -174,12 +187,17 @@ def summary_assertions(df, case_num):
     return df, case_num
 
 def referential_integrity(df, case_num, flag=None):
-  """
-  Assertion 9: For each vehicle id, there should be a generated  trip id - see the trip table
-  Assertion 10: Each breadcrumb record with non zero speed field should have a non-zero
-  direction field and vice-versa
-  """
-  if flag == 0:
+    """
+    Assertion 9: For each vehicle id, there should be a generated  trip id - see the trip table
+    Assertion 10: Each breadcrumb record with non zero speed field should have a non-zero
+                    direction field and vice-versa
+    :param df (Object): Input dataframe to evaluate the referential integrity assertion
+    :param case_num (Int): An integer to denote the case number
+    :param flag (Int): A binary integer to distinguish between breadcrumb and trip dataframes 
+    :return df (Object): Updated dataframe after deleting the invalid records
+    :return case_num (Int): Updated case number
+    """
+    if flag == 0:
     case_num = case_num + 1
     invalid_record_count = 0
     print('\n----- CASE ' + str(case_num) + ': For each vehicle id, there should be a generated',\
@@ -198,8 +216,8 @@ def referential_integrity(df, case_num, flag=None):
         print('--------------REFRENTIAL INTEGRITY ASSERTION violation!!For each vehicle id,',\
                 'there should be a generated trip_id-----------')
         print('Count of invalid records: ', invalid_record_count)
-  
-  if flag == 1:
+
+    if flag == 1:
     case_num = case_num + 1
     print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record with nofield should have',\
             'an zero speed non-zero direction field and vice-versa --------')
@@ -216,7 +234,7 @@ def referential_integrity(df, case_num, flag=None):
         else:
             if pd.notnull(direction):
                 invalid_record_count2 += 1
-    
+
     if invalid_record_count1 == 0 and invalid_record_count2 == 0:
         print('All the records passed Case {} check!'.format(case_num)) 
     if invalid_record_count1 > 0:
@@ -228,9 +246,19 @@ def referential_integrity(df, case_num, flag=None):
                 'empty speed when the direction is non-zero ---------')
         print('Count of invalid records: ', invalid_record_count2) 
 
-  return df, case_num
+    return df, case_num
 
 def validate(bc_json_data, se_json_data):
+
+    """
+    This is the entry point to this file.
+    It performs all the required transformations in the breadcrumb and stop event csv files 
+    using pandas dataframes. 
+    Also, calls were made to validate these dataframes against various assertions.
+    :param bc_json_data (JSON Object): breadcrumb JSON data
+    :param se_json_data (JSON Object): Stop Event JSON data
+    :return: None
+    """
     # show all the rows and columns
     pd.options.display.max_columns = None
     pd.options.display.max_rows = None
