@@ -198,53 +198,53 @@ def referential_integrity(df, case_num, flag=None):
     :return case_num (Int): Updated case number
     """
     if flag == 0:
-    case_num = case_num + 1
-    invalid_record_count = 0
-    print('\n----- CASE ' + str(case_num) + ': For each vehicle id, there should be a generated',\
-            'trip id----------')
-    for item, row in df.iterrows():
-        trip_id = row['trip_id']
-        vehicle_id = row['vehicle_id']
-        if pd.notnull(vehicle_id) and pd.notnull(trip_id):
-            pass
-        else:
-            invalid_record_count += 1
-        
-    if invalid_record_count == 0:
-        print('All the records passed Case {} check!'.format(case_num))
-    else:
-        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!!For each vehicle id,',\
-                'there should be a generated trip_id-----------')
-        print('Count of invalid records: ', invalid_record_count)
-
-    if flag == 1:
-    case_num = case_num + 1
-    print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record with nofield should have',\
-            'an zero speed non-zero direction field and vice-versa --------')
-    invalid_record_count1 = 0
-    invalid_record_count2 = 0
-    for item, row in df.iterrows():
-        speed = row['speed']
-        direction = row['direction']
-        if pd.notnull(speed):
-            if pd.notnull(direction):
+        case_num = case_num + 1
+        invalid_record_count = 0
+        print('\n----- CASE ' + str(case_num) + ': For each vehicle id, there should be a generated',\
+                'trip id----------')
+        for item, row in df.iterrows():
+            trip_id = row['trip_id']
+            vehicle_id = row['vehicle_id']
+            if pd.notnull(vehicle_id) and pd.notnull(trip_id):
                 pass
             else:
-                invalid_record_count1 += 1
+                invalid_record_count += 1
+            
+        if invalid_record_count == 0:
+            print('All the records passed Case {} check!'.format(case_num))
         else:
-            if pd.notnull(direction):
-                invalid_record_count2 += 1
+            print('--------------REFRENTIAL INTEGRITY ASSERTION violation!!For each vehicle id,',\
+                    'there should be a generated trip_id-----------')
+            print('Count of invalid records: ', invalid_record_count)
 
-    if invalid_record_count1 == 0 and invalid_record_count2 == 0:
-        print('All the records passed Case {} check!'.format(case_num)) 
-    if invalid_record_count1 > 0:
-        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
-                'empty Direction when the speed is non-zero ---------')
-        print("Count of invalid records: ", invalid_record_count1) 
-    if invalid_record_count2 > 0:
-        print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
-                'empty speed when the direction is non-zero ---------')
-        print('Count of invalid records: ', invalid_record_count2) 
+    if flag == 1:
+        case_num = case_num + 1
+        print('\n----- CASE ' + str(case_num) + ': Every Breadcrumb record with nofield should have',\
+                'an zero speed non-zero direction field and vice-versa --------')
+        invalid_record_count1 = 0
+        invalid_record_count2 = 0
+        for item, row in df.iterrows():
+            speed = row['speed']
+            direction = row['direction']
+            if pd.notnull(speed):
+                if pd.notnull(direction):
+                    pass
+                else:
+                    invalid_record_count1 += 1
+            else:
+                if pd.notnull(direction):
+                    invalid_record_count2 += 1
+
+        if invalid_record_count1 == 0 and invalid_record_count2 == 0:
+            print('All the records passed Case {} check!'.format(case_num)) 
+        if invalid_record_count1 > 0:
+            print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
+                    'empty Direction when the speed is non-zero ---------')
+            print("Count of invalid records: ", invalid_record_count1) 
+        if invalid_record_count2 > 0:
+            print('--------------REFRENTIAL INTEGRITY ASSERTION violation!! Breadcrumb records with',\
+                    'empty speed when the direction is non-zero ---------')
+            print('Count of invalid records: ', invalid_record_count2) 
 
     return df, case_num
 
