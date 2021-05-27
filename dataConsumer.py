@@ -28,8 +28,8 @@ import time
 from confluent_kafka import Consumer
 import ccloud_lib
 
-from data_validation import *
-from data_load import *
+from data_validation import validate
+from data_load import postgres
 
 
 if __name__ == '__main__':
