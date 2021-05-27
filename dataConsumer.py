@@ -35,20 +35,20 @@ from data_load import *
 if __name__ == '__main__':
 
     # Read arguments and configurations and initialize
-    args = ccloud_lib.parse_args()
-    config_file = args.config_file
-    topic = args.topic
-    conf = ccloud_lib.read_ccloud_config(config_file)
+    arguments = ccloud_lib.parse_args()
+    config_file = arguments.config_file
+    topic = arguments.topic
+    configuration = ccloud_lib.read_ccloud_config(config_file)
 
     # Create Consumer instance
     # 'auto.offset.reset=earliest' to start reading from the beginning of the
     #   topic if no committed offsets exist
     consumer = Consumer({
-        'bootstrap.servers': conf['bootstrap.servers'],
-        'sasl.mechanisms': conf['sasl.mechanisms'],
-        'security.protocol': conf['security.protocol'],
-        'sasl.username': conf['sasl.username'],
-        'sasl.password': conf['sasl.password'],
+        'bootstrap.servers': configuration['bootstrap.servers'],
+        'sasl.mechanisms': configuration['sasl.mechanisms'],
+        'security.protocol': configuration['security.protocol'],
+        'sasl.username': configuration['sasl.username'],
+        'sasl.password': configuration['sasl.password'],
         'group.id': 'python_example_group_1',
         'auto.offset.reset': 'earliest',
     })
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     flag = 0
     try:
         while True:
-            msg = consumer.poll(1.0)
-            if msg is None:
+            message = consumer.poll(1.0)
+            if message is None:
                 # No message available within timeout.
                 # Initial message consumption may take up to
                 # `session.timeout.ms` for the consumer group to
@@ -81,20 +81,20 @@ if __name__ == '__main__':
                     break
                 else:
                     continue
-            elif msg.error():
-                print('error: {}'.format(msg.error()))
+            elif message.error():
+                print('error: {}'.format(message.error()))
             else:
                 # Check for Kafka message
-                record_key = msg.key()
+                record_key = message.key()
                 if record_key == 'Breadcrumb':
-                    record_value = msg.value().decode('utf-8')
+                    record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     breadcrumb_list.append(data)
                     total_count += 1
                     #print("Consumed record with value {}.format(data))
 
                 if record_key == 'stop_event':
-                    record_value = msg.value().decode('utf-8')
+                    record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     stop_event_list.append(data)
                     total_count += 1
@@ -103,9 +103,9 @@ if __name__ == '__main__':
         pass
     finally:
         if breadcrumb_list or stop_event_list:
-            bc_json_data = json.dumps(breadcrumb_list, indent = 4)
-            se_json_data = json.dumps(stop_event_list, indent = 4)
-            validate(bc_json_data, se_json_data)
+            breadcrumb_json_data = json.dumps(breadcrumb_list, indent = 4)
+            stop_event_json_data = json.dumps(stop_event_list, indent = 4)
+            validate(breadcrumb_json_data, stop_event_json_data)
             postgres()
         # Leave group and commit final offsets
         consumer.close()

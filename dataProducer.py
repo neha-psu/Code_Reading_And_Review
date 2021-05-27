@@ -33,22 +33,22 @@ import urllib.request
 if __name__ == '__main__':
 
     # Read arguments and configurations and initialize
-    args = ccloud_lib.parse_args()
-    config_file = args.config_file
-    topic = args.topic
-    conf = ccloud_lib.read_ccloud_config(config_file)
+    arguments = ccloud_lib.parse_args()
+    config_file = arguments.config_file
+    topic = arguments.topic
+    configuration = ccloud_lib.read_ccloud_config(config_file)
 
     # Create Producer instance
     producer = Producer({
-        'bootstrap.servers': conf['bootstrap.servers'],
-        'sasl.mechanisms': conf['sasl.mechanisms'],
-        'security.protocol': conf['security.protocol'],
-        'sasl.username': conf['sasl.username'],
-        'sasl.password': conf['sasl.password'],
+        'bootstrap.servers': configuration['bootstrap.servers'],
+        'sasl.mechanisms': configuration['sasl.mechanisms'],
+        'security.protocol': configuration['security.protocol'],
+        'sasl.username': configuration['sasl.username'],
+        'sasl.password': configuration['sasl.password'],
     })
 
     # Create topic if needed
-    ccloud_lib.create_topic(conf, topic)
+    ccloud_lib.create_topic(configuration, topic)
 
     delivered_records = 0
     breadcrumb_path = '/home/agrawal/examples/clients/cloud/python/sensor_data/2021-02-05.json'
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     with open(stop_event_path) as file:
         stop_event_data = json.load(file)
 
-    def acked(err, msg):
+    def acked(error, message):
         """
         Optional per-message on_delivery handler (triggered by poll() or flush())
         when a message has been successfully delivered or
@@ -73,24 +73,24 @@ if __name__ == '__main__':
         """Delivery report handler called on
         successful or failed delivery of message
         """
-        if err is not None:
-            print('Failed to deliver message: {}'.format(err))
+        if error is not None:
+            print('Failed to deliver message: {}'.format(error))
         else:
             delivered_records += 1
-            print('Produced record to topic ' + str(msg.topic()) + ' partition',\
-                    '[' + str(msg.partition()) + '] @ offset ' + str(msg.offset()))
+            print('Produced record to topic ' + str(message.topic()) + ' partition',\
+                    '[' + str(message.partition()) + '] @ offset ' + str(message.offset()))
         
-    for val in breadcrumb_data:
+    for record in breadcrumb_data:
         record_key = 'Breadcrumb'
-        record_value = json.dumps(val)
+        record_value = json.dumps(record)
         producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
         producer.poll(0)
 
-    for val in stop_event_data:
+    for record in stop_event_data:
         record_key = 'stop_event'
-        record_value = json.dumps(val)
+        record_value = json.dumps(record)
         producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
