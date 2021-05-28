@@ -4,46 +4,52 @@ from datetime import date
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
-###### Breadcrumb DATA ######
+# the URL containing the BREADCRUMB data. Pass this URL to the
+# urlopen() to get the response.
 breadcrumb_url = 'http://rbi.ddns.net/getBreadCrumbData'
 response = urlopen(breadcrumb_url)
+
+# store the data in the json format
 data = json.loads(response.read().decode('utf-8'))
 current_date = date.today()
 date = '/home/agrawal/examples/clients/cloud/python/sensor_data/' + str(current_date) + '.json'
 with open(date, 'w') as file:
     json.dump(data, file, indent = 2)
 
-########## STOP EVENT DATA #######
+# the URL containing the STOP EVENT data. Pass this URL to the 
+# urlopen() to get the html of the page
 stop_event_url = 'http://rbi.ddns.net/getStopEvents'
 html = urlopen(stop_event_url)
-soup = BeautifulSoup(html, 'lxml')
-h3 = soup.find_all('h3')
 
-trip_id_h3 = []
+# the BeautifulSoup is called to parse the html files. It takes the raw
+# html text and break it into Python objects. The soup object allows you
+# to extract interesting information about the website
+soup = BeautifulSoup(html, 'lxml')
+h3 = soup.find_all('h3') # find_all() will extract all the h3 headers 
+
+trip_id_h3 = [] # Empty list to store all the h3 headers without html tags
 for record in h3:
     str_h3 = str(record)
+    # To remove html tags, pass the h3 string into BeautifulSoup() 
+    # and use the get_text() method to extract the text without html tags.
     clean_text = BeautifulSoup(str_h3, 'lxml').get_text()
     trip_id_h3.append(clean_text)
     
-trip_id = []
+trip_id = [] # parse h3 to get the trip_ids and store it in the trip_id list
 for record in trip_id_h3:
     record_list = record.split(' ')
     trip_id_num = int(record_list[4])
     trip_id.append(trip_id_num)
 
+# find_all() of soup object will extract all the tables
 tables = soup.find_all('table')
-flag = 0
-stop_event = []
+stop_event = [] # Empty list to store each table record as a JSON string
 for table in tables:
     trip = trip_id[0]
     trip_id = trip_id[1:]
     rows = table.find_all('tr')
-    if flag == 0:
-        row_th = rows[0].find_all('th')
-        str_cells = str(row_th)
-        header = BeautifulSoup(str_cells, 'lxml').get_text()
-        flag = 1
 
+    # Skipped the rows[0] to ignore the header tag <th>
     for row in rows[1:]:
         row_td = row.find_all('td')
         str_cells1 = str(row_td)
@@ -59,6 +65,7 @@ for table in tables:
         stop_event_row = stop_event_rows[size - 1].split(']')
         stop_event_rows[size - 1] = stop_event_row[0]
 
+        # convert the stop_event_rows to JSON string and append it to the stop_event list
         for _ in range(len(stop_event_rows)):
             data = {}
             data['trip_id'] = trip
