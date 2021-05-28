@@ -91,14 +91,14 @@ if __name__ == '__main__':
                     data = json.loads(record_value)
                     breadcrumb_list.append(data)
                     total_count += 1
-                    #print("Consumed record with value {}.format(data))
+                    # print("Consumed record with value {}.format(data))
 
                 if record_key == 'stop_event':
                     record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     stop_event_list.append(data)
                     total_count += 1
-                    #print("Consumed record with value {}.format(data))
+                    # print("Consumed record with value {}.format(data))
     except KeyboardInterrupt:
         pass
     finally:

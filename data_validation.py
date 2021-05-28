@@ -262,7 +262,7 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     pd.options.display.max_columns = None
     pd.options.display.max_rows = None
 
-    #Read the json file into the dataframe
+    # Read the json file into the dataframe
     breadcrumb_data_frame = pd.read_json(breadcrumb_json_data)
     stop_event_data_frame = pd.read_json(stop_event_json_data)
     print('\n===================================DATA VALIDATION AND TRANSFORMATION'\
@@ -360,8 +360,8 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     trip_dataframe['direction'] = 'Out'
     trip_dataframe['service_key'] = 'Weekday'
     trip_dataframe['route_id'] = np.nan
-    #trip_dataframe["direction"] = trip_dataframe["direction"].astype('Int32')
-    #trip_dataframe["service_key"] = trip_dataframe["service_key"].astype(str)
+    # trip_dataframe["direction"] = trip_dataframe["direction"].astype('Int32')
+    # trip_dataframe["service_key"] = trip_dataframe["service_key"].astype(str)
     trip_dataframe['route_id'] = trip_dataframe['route_id'].astype('Int32')
 
     # TRANSFORMATION 4 : Change the value of direction to out and back if its 0 and 1 respectively
