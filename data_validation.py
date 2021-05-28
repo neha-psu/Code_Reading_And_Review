@@ -26,20 +26,20 @@ def existence_assertion(data_frame, case_num, flag=None):
 
     if flag == 0:
         case_num = case_num + 1
-        print(f'CASE (case_num): Every Trip record should have a valid NOT NULL vehicle id')
+        print(f'CASE {case_num}: Every Trip record should have a valid NOT NULL vehicle id')
         invalid_record_count = 0
         for item, vehicle_data in enumerate(data_frame['vehicle_id']):
             if math.isnan(vehicle_data):   
                 invalid_record_count += 1
 
         if invalid_record_count == 0:
-            print(f'Case {} check passed!'.format(case_num))
+            print(f'Case {case_num} check passed!')
         else:
-            print(f'EXISTENCE ASSERTION VIOLATION for Case {}!!'.format(case_num))
+            print(f'EXISTENCE ASSERTION VIOLATION for Case {case_num}!!')
             print(f'Count of invalid records: ', invalid_record_count)
 
         case_num = case_num + 2
-        print(f'CASE (case_num - 1) & (case_num): Trip records should have a unique NOT NULL trip id')
+        print(f'CASE {case_num - 1} & {case_num}: Trip records should have a unique NOT NULL trip id')
         invalid_record_count = 0 
         output = pd.Series(data_frame['trip_id']).is_unique
         for item, trip_data in enumerate(data_frame['trip_id']):
@@ -55,20 +55,20 @@ def existence_assertion(data_frame, case_num, flag=None):
             print(f'EXISTENCE ASSERTION VIOLATION!! trip ID should not be NOT NULL value')
             print('Count of invalid records: ', invalid_record_count)
         else:
-            print(f'Case {} check passed!'.format(case_num))
+            print(f'Case {case_num} check passed!')
     
     if flag == 1 :
         case_num = case_num + 1
-        print(f'CASE (case_num): Every Breadcrumb record should have a non empty tstamp field')
+        print(f'CASE {case_num}: Every Breadcrumb record should have a non empty tstamp field')
         invalid_record_count = 0
         for item, tstamp_data in enumerate(data_frame['tstamp']):
             if pd.isnull(tstamp_data):
                 invalid_record_count += 1
       
         if invalid_record_count == 0:
-            print(f'Case {} check passed!'.format(case_num))
+            print(f'Case {case_num} check passed!')
         else:
-            print(f'EXISTENCE ASSERTION VOILATION for Case {}!!'.format(case_num))
+            print(f'EXISTENCE ASSERTION VOILATION for Case {case_num}!!')
             print(f'Count of invalid records: ', invalid_record_count)
 
     return data_frame, case_num
@@ -84,7 +84,7 @@ def limit_assertion(data_frame, case_num):
     :return case_num (Int): Updated case number
     """
     case_num = case_num + 1
-    print(f'CASE (case_num): Every record should have a direction between 0-359 inclusive')
+    print(f'CASE {case_num}: Every record should have a direction between 0-359 inclusive')
     invalid_record_count = 0
     for item, direction in enumerate(data_frame['direction']):
         if pd.isnull(direction):
@@ -96,13 +96,13 @@ def limit_assertion(data_frame, case_num):
             invalid_record_count += 1
 
     if invalid_record_count == 0:
-        print(f'Case {} check passed!'.format(case_num))
+        print(f'Case {case_num} check passed!')
     else:
-        print(f'LIMIT ASSERTION VIOLATION for Case {}!!'.format(case_num))
+        print(f'LIMIT ASSERTION VIOLATION for Case {case_num}!!')
         print(f'Count of invalid records: ', invalid_record_count)
     
     case_num = case_num + 1
-    print(f'CASE (case_num): Every record should have a speed limit within 250 miles/hr')
+    print(f'CASE {case_num}: Every record should have a speed limit within 250 miles/hr')
     invalid_record_count = 0
     for item, speed in enumerate(data_frame['speed']):
         if speed <= 250 or pd.isnull(speed):
@@ -111,13 +111,13 @@ def limit_assertion(data_frame, case_num):
             data_frame = data_frame.drop(data_frame.index[item])
             invalid_record_count += 1
     if invalid_record_count == 0:
-        print(f'Case {} check passed!'.format(case_num))
+        print(f'Case {case_num} check passed!')
     else:
-        print(f'LIMIT ASSERTION VIOLATION for Case {}!!'.format(case_num))
+        print(f'LIMIT ASSERTION VIOLATION for Case {case_num}!!')
         print(f'Count of invalid records: ', invalid_record_count)
 
     case_num = case_num + 1
-    print(f'CASE (case_num): Number of satellites should be between 0 and 12 inclusive')
+    print(f'CASE {case_num}: Number of satellites should be between 0 and 12 inclusive')
     invalid_record_count = 0
     for item, satellites in enumerate(data_frame['GPS_SATELLITES']):
         if pd.isnull(satellites):
@@ -129,14 +129,14 @@ def limit_assertion(data_frame, case_num):
             invalid_record_count += 1
 
     if invalid_record_count == 0:
-        print(f'Case {} check passed!'.format(case_num))
+        print(f'Case {case_num} check passed!')
     else:
-        print(f'LIMIT ASSERTION VIOLATION for Case {}!!'.format(case_num))
+        print(f'LIMIT ASSERTION VIOLATION for Case {case_num}!!')
         print(f'Count of invalid records: ', invalid_record_count)
 
     return data_frame, case_num
 
-def summary_assertions(data_frame, case_num):
+def summary_assertion(data_frame, case_num):
     """
     Assertion 8: Across all the Breadcrumb records, combination of trip id and tstamp 
                     should be unique
@@ -146,7 +146,7 @@ def summary_assertions(data_frame, case_num):
     :return case_num (Int): Updated case number    
     """
     case_num = case_num + 1
-    print(f'CASE (case_num): Records should have unique combination of trip id and tstamp')
+    print(f'CASE {case_num}: Records should have unique combination of trip id and tstamp')
     summary_assertion = list(zip(data_frame['trip_id'], data_frame['tstamp']))
     unique = set()
     duplicate = 0
@@ -163,9 +163,9 @@ def summary_assertions(data_frame, case_num):
                 unique.add(summary_data)
                 
     if duplicate == 0:
-        print(f'Case {} check passed!'.format(case_num))
+        print(f'Case {case_num} check passed!')
     else:
-        print(f'SUMMARY ASSERTION VIOLATION for Case {}!!'.format(case_num))
+        print(f'SUMMARY ASSERTION VIOLATION for Case {case_num}!!')
         print(f'Count of invalid records: ', duplicate)
 
     return data_frame, case_num
@@ -184,7 +184,7 @@ def referential_integrity(data_frame, case_num, flag=None):
     if flag == 0:
         case_num = case_num + 1
         invalid_record_count = 0
-        print(f'CASE (case_num): For each vehicle id, there should be a generated trip id')
+        print(f'CASE {case_num}: For each vehicle id, there should be a generated trip id')
         for item, row in data_frame.iterrows():
             trip_id = row['trip_id']
             vehicle_id = row['vehicle_id']
@@ -194,14 +194,14 @@ def referential_integrity(data_frame, case_num, flag=None):
                 invalid_record_count += 1
             
         if invalid_record_count == 0:
-            print(f'Case {} check passed!'.format(case_num))
+            print(f'Case {case_num} check passed!')
         else:
-            print(f'REFERENTIAL ASSERTION VIOLATION for Case {}!!'.format(case_num))
+            print(f'REFERENTIAL ASSERTION VIOLATION for Case {case_num}!!')
             print(f'Count of invalid records: ', invalid_record_count)
 
     if flag == 1:
         case_num = case_num + 1
-        print(f'CASE (case_num): Non-zero speed records should have non-zero direction and vice-versa')
+        print(f'CASE {case_num}: Non-zero speed records should have non-zero direction and vice-versa')
         invalid_record_count1 = 0
         invalid_record_count2 = 0
         for item, row in data_frame.iterrows():
@@ -217,7 +217,7 @@ def referential_integrity(data_frame, case_num, flag=None):
                     invalid_record_count2 += 1
 
         if invalid_record_count1 == 0 and invalid_record_count2 == 0:
-            print(f'Case {} check passed!'.format(case_num)) 
+            print(f'Case {case_num} check passed!') 
         if invalid_record_count1 > 0:
             print(f'REFERENTIAL ASSERTION VIOLATION!! Empty direction when the speed is non-zero')
             print(f'Count of invalid records: ', invalid_record_count1) 
