@@ -71,18 +71,18 @@ if __name__ == '__main__':
                 # rebalance and start consuming
                 timeout = 10
                 if flag == 0:
-                    print('Waiting for message or event/error in poll()')
+                    print(f'Waiting for message or event/error in poll()')
                     start = time.time()
                     flag = 1
                 else:
-                    print('Waiting for message or event/error in poll()')
+                    print(f'Waiting for message or event/error in poll()')
 
                 if time.time() > start + timeout:
                     break
                 else:
                     continue
             elif message.error():
-                print('error: {}'.format(message.error()))
+                print(f'error: {message.error()}')
             else:
                 # Check for Kafka message
                 record_key = message.key()
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                     data = json.loads(record_value)
                     breadcrumb_list.append(data)
                     total_count += 1
-                    # print("Consumed record with value {}.format(data))
+                    # print(f'Consumed record with value {data}')
                 
                 # For messages with "stop_event" key, append the record values in the
                 # stop event list. 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                     data = json.loads(record_value)
                     stop_event_list.append(data)
                     total_count += 1
-                    # print("Consumed record with value {}.format(data))
+                    # print(f'Consumed record with value {data}')
     except KeyboardInterrupt:
         pass
     finally:

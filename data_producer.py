@@ -71,11 +71,10 @@ if __name__ == '__main__':
         global delivered_records
 
         if error is not None:
-            print('Failed to deliver message: {}'.format(error))
+            print(f'Failed to deliver message: {error}')
         else:
             delivered_records += 1
-            print('Produced record to topic ' + str(message.topic()) + ' partition',\
-                    '[' + str(message.partition()) + '] @ offset ' + str(message.offset()))
+            print(f'Produced record to topic {message.topic()} partition [{message.partition()}] @ offset {message.offset()}')
 
     # For all the records in the breadcrumb data, set the json key as 'Breadcrumb'
     # and json value as the record itself. The "key" value will be helpful to consume 
@@ -102,4 +101,4 @@ if __name__ == '__main__':
     # Adding flush() before exiting will make the client wait for any outstanding messages
     # in the Producer queue to be delivered to the broker.    
     producer.flush()
-    print('{} messages were produced to topic {}!'.format(delivered_records, topic))
+    print(f'{delivered_records} messages were produced to topic {topic}!')
