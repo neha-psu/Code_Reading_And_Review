@@ -58,8 +58,8 @@ if __name__ == '__main__':
 
     # Process messages
     total_count = 0
-    breadcrumb_list = []
-    stop_event_list = []
+    breadcrumb_list = [] # Empty list to store the records with "key" as Breadcrumb
+    stop_event_list = [] # Empty list to store the records with "key" as stop_event
     flag = 0
     try:
         while True:
@@ -86,13 +86,19 @@ if __name__ == '__main__':
             else:
                 # Check for Kafka message
                 record_key = message.key()
+
+                # check for the records with key as Breadcrumb, and add the values of
+                # the record in the breadcrumb list. Finally, increment the total_count 
+                # to keep a track of number of records consumed.
                 if record_key == 'Breadcrumb':
                     record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     breadcrumb_list.append(data)
                     total_count += 1
                     # print("Consumed record with value {}.format(data))
-
+                
+                # For messages with "stop_event" key, append the record values in the
+                # stop event list. 
                 if record_key == 'stop_event':
                     record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
@@ -103,6 +109,11 @@ if __name__ == '__main__':
         pass
     finally:
         if breadcrumb_list or stop_event_list:
+            # if any of the two lists are non empty, then create a json data and 
+            # call validate method from data_validation file to perform validations
+            # and trasformations using pandas dataframe.  Finally, postgres() method 
+            # from the data_load is called which will create tables and load the data
+            # into the potsgres server.
             breadcrumb_json_data = json.dumps(breadcrumb_list, indent = 4)
             stop_event_json_data = json.dumps(stop_event_list, indent = 4)
             validate(breadcrumb_json_data, stop_event_json_data)

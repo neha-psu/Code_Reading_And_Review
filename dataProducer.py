@@ -69,14 +69,18 @@ if __name__ == '__main__':
         :return: None
         """
         global delivered_records
-        
+
         if error is not None:
             print('Failed to deliver message: {}'.format(error))
         else:
             delivered_records += 1
             print('Produced record to topic ' + str(message.topic()) + ' partition',\
                     '[' + str(message.partition()) + '] @ offset ' + str(message.offset()))
-        
+
+    # For all the records in the breadcrumb data, set the json key as 'Breadcrumb'
+    # and json value as the record itself. The "key" value will be helpful to consume 
+    # the record from a particular stream. 
+    # Finally, publish the record to the kafka topic.     
     for record in breadcrumb_data:
         record_key = 'Breadcrumb'
         record_value = json.dumps(record)
@@ -85,6 +89,8 @@ if __name__ == '__main__':
         # from previous produce() calls.
         producer.poll(0)
 
+    # For all the records in the stop event data, set the json key as 'stop_event'
+    # and json value as the record itself. Finally, publish the record to the kafka topic.   
     for record in stop_event_data:
         record_key = 'stop_event'
         record_value = json.dumps(record)
@@ -92,6 +98,8 @@ if __name__ == '__main__':
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
         producer.poll(0)
-        
+
+    # Adding flush() before exiting will make the client wait for any outstanding messages
+    # in the Producer queue to be delivered to the broker.    
     producer.flush()
     print('{} messages were produced to topic {}!'.format(delivered_records, topic))
