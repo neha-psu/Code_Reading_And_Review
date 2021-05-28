@@ -8,8 +8,8 @@ from bs4 import BeautifulSoup
 breadcrumb_url = 'http://rbi.ddns.net/getBreadCrumbData'
 response = urlopen(breadcrumb_url)
 data = json.loads(response.read().decode('utf-8'))
-dt = date.today()
-date = '/home/agrawal/examples/clients/cloud/python/sensor_data/' + str(dt) + '.json'
+current_date = date.today()
+date = '/home/agrawal/examples/clients/cloud/python/sensor_data/' + str(current_date) + '.json'
 with open(date, 'w') as file:
     json.dump(data, file, indent = 2)
 
@@ -20,15 +20,15 @@ soup = BeautifulSoup(html, 'lxml')
 h3 = soup.find_all('h3')
 
 trip_id_h3 = []
-for i in h3:
-    str_h3 = str(i)
+for record in h3:
+    str_h3 = str(record)
     clean_text = BeautifulSoup(str_h3, 'lxml').get_text()
     trip_id_h3.append(clean_text)
     
 trip_id = []
-for i in trip_id_h3:
-    x = i.split(' ')
-    trip_id_num = int(x[4])
+for record in trip_id_h3:
+    record_list = record.split(' ')
+    trip_id_num = int(record_list[4])
     trip_id.append(trip_id_num)
 
 tables = soup.find_all('table')
@@ -53,11 +53,11 @@ for table in tables:
         stop_event_rows = clean_text.split(', ')
         
         # strip '[' from first element of the list and ']' from the last element of the list
-        x = stop_event_rows[0].split('[')
-        stop_event_rows[0] = x[1]
+        stop_event_row = stop_event_rows[0].split('[')
+        stop_event_rows[0] = stop_event_row[1]
         size = len(stop_event_rows)
-        x = stop_event_rows[size - 1].split(']')
-        stop_event_rows[size - 1] = x[0]
+        stop_event_row = stop_event_rows[size - 1].split(']')
+        stop_event_rows[size - 1] = stop_event_row[0]
 
         for _ in range(len(stop_event_rows)):
             data = {}
@@ -90,6 +90,6 @@ for table in tables:
             data = json.loads(json_str)
             stop_event.append(data)
 
-fname = '/home/agrawal/examples/clients/cloud/python/stop_event/' + str(dt) + '.json'
+fname = '/home/agrawal/examples/clients/cloud/python/stop_event/' + str(current_date) + '.json'
 with open(fname, 'w') as file:
     json.dump(stop_event, file, indent = 2)    

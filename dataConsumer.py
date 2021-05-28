@@ -35,20 +35,20 @@ from data_load import postgres
 if __name__ == '__main__':
 
     # Read arguments and configurations and initialize
-    args = ccloud_lib.parse_args()
-    config_file = args.config_file
-    topic = args.topic
-    conf = ccloud_lib.read_ccloud_config(config_file)
+    arguments = ccloud_lib.parse_args()
+    config_file = arguments.config_file
+    topic = arguments.topic
+    configuration = ccloud_lib.read_ccloud_config(config_file)
 
     # Create Consumer instance
     # 'auto.offset.reset=earliest' to start reading from the beginning of the
     #   topic if no committed offsets exist
     consumer = Consumer({
-        'bootstrap.servers': conf['bootstrap.servers'],
-        'sasl.mechanisms': conf['sasl.mechanisms'],
-        'security.protocol': conf['security.protocol'],
-        'sasl.username': conf['sasl.username'],
-        'sasl.password': conf['sasl.password'],
+        'bootstrap.servers': configuration['bootstrap.servers'],
+        'sasl.mechanisms': configuration['sasl.mechanisms'],
+        'security.protocol': configuration['security.protocol'],
+        'sasl.username': configuration['sasl.username'],
+        'sasl.password': configuration['sasl.password'],
         'group.id': 'python_example_group_1',
         'auto.offset.reset': 'earliest',
     })
@@ -58,13 +58,13 @@ if __name__ == '__main__':
 
     # Process messages
     total_count = 0
-    breadcrumb_list = []
-    stop_event_list = []
+    breadcrumb_list = [] # Empty list to store the records with "key" as Breadcrumb
+    stop_event_list = [] # Empty list to store the records with "key" as stop_event
     flag = 0
     try:
         while True:
-            msg = consumer.poll(1.0)
-            if msg is None:
+            message = consumer.poll(1.0)
+            if message is None:
                 # No message available within timeout.
                 # Initial message consumption may take up to
                 # `session.timeout.ms` for the consumer group to
@@ -81,31 +81,42 @@ if __name__ == '__main__':
                     break
                 else:
                     continue
-            elif msg.error():
-                print('error: {}'.format(msg.error()))
+            elif message.error():
+                print('error: {}'.format(message.error()))
             else:
                 # Check for Kafka message
-                record_key = msg.key()
+                record_key = message.key()
+
+                # check for the records with key as Breadcrumb, and add the values of
+                # the record in the breadcrumb list. Finally, increment the total_count 
+                # to keep a track of number of records consumed.
                 if record_key == 'Breadcrumb':
-                    record_value = msg.value().decode('utf-8')
+                    record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     breadcrumb_list.append(data)
                     total_count += 1
-                    #print("Consumed record with value {}.format(data))
-
+                    # print("Consumed record with value {}.format(data))
+                
+                # For messages with "stop_event" key, append the record values in the
+                # stop event list. 
                 if record_key == 'stop_event':
-                    record_value = msg.value().decode('utf-8')
+                    record_value = message.value().decode('utf-8')
                     data = json.loads(record_value)
                     stop_event_list.append(data)
                     total_count += 1
-                    #print("Consumed record with value {}.format(data))
+                    # print("Consumed record with value {}.format(data))
     except KeyboardInterrupt:
         pass
     finally:
         if breadcrumb_list or stop_event_list:
-            bc_json_data = json.dumps(breadcrumb_list, indent = 4)
-            se_json_data = json.dumps(stop_event_list, indent = 4)
-            validate(bc_json_data, se_json_data)
+            # if any of the two lists are non empty, then create a json data and 
+            # call validate method from data_validation file to perform validations
+            # and trasformations using pandas dataframe.  Finally, postgres() method 
+            # from the data_load is called which will create tables and load the data
+            # into the potsgres server.
+            breadcrumb_json_data = json.dumps(breadcrumb_list, indent = 4)
+            stop_event_json_data = json.dumps(stop_event_list, indent = 4)
+            validate(breadcrumb_json_data, stop_event_json_data)
             postgres()
         # Leave group and commit final offsets
         consumer.close()

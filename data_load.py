@@ -5,8 +5,6 @@ import re
 import csv
 
 import psycopg2.extras
-import pandas as pd
-import numpy as np
 
 db_name = 'postgres'
 db_user = 'postgres'
