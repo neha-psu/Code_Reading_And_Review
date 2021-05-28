@@ -268,17 +268,19 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     print('\n===================================DATA VALIDATION AND TRANSFORMATION'\
             '====================================\n')
 
-    # TRANSFORMATION 1 : Extract specific selected columns to new DataFrame as a copy
+    # TRANSFORMATION 1: Extract specific selected columns to new DataFrame as a copy
     breadcrumb_dataframe = breadcrumb_data_frame.filter(['OPD_DATE', 'ACT_TIME', 'GPS_LATITUDE', 'GPS_LONGITUDE', \
     'DIRECTION', 'VELOCITY', 'EVENT_NO_TRIP', 'VEHICLE_ID', 'GPS_SATELLITES'], axis=1)
     stop_dataframe = stop_event_data_frame.filter(['trip_id', 'vehicle_number', 'route_number', 'direction', 'service_key'], \
     axis=1)
     
-    # TRANSFORMATION 2 : Replace all the empty fields by NaN
+    # TRANSFORMATION 2: Replace all the empty fields by NaN when reading the json data into pandas dataframe
     breadcrumb_dataframe = breadcrumb_dataframe.replace(r'^\s*$', np.nan, regex=True)
     stop_dataframe = stop_dataframe.replace(r'^\s*$', np.nan, regex=True)
     
-    # TRANSFORMATION 3 :  Concatenate OPD DATE and ACT TIME --> DATE TIME       
+    # TRANSFORMATION 3: Type cast the OPD_DATE (which is a string format e.g. 03-SEP-20)
+    # and ACT_TIME  fields ( in seconds) to datetime in dd-mm-yyyy hh:mm:ss format. 
+    # This datetime format is acceptable by postgres.       
     tstamp_dataframe = breadcrumb_dataframe.filter(['OPD_DATE', 'ACT_TIME'], axis=1)
     timestamps = []
     dic = {
@@ -316,7 +318,7 @@ def validate(breadcrumb_json_data, stop_event_json_data):
         tstamp=datetime.strptime(date_time, '%d%m%y%H:%M:%S')
         timestamps.append(tstamp)
 
-    # TRANSFORNATION 4 : Drop the "OPD_DATE, ACT_TIME" and insert "tstamp" into Breadcrumb data
+    # TRANSFORNATION 4: Drop the "OPD_DATE, ACT_TIME" and insert "tstamp" into Breadcrumb data
     breadcrumb_dataframe.insert(0, 'tstamp', timestamps)
     breadcrumb_dataframe.drop(columns = ['OPD_DATE', 'ACT_TIME'], inplace = True, axis = 1)
 
@@ -326,7 +328,7 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     'DIRECTION': 'direction', 'VEHICLE_ID': 'vehicle_id'})
     stop_dataframe = stop_dataframe.rename(columns = {'vehicle_number': 'vehicle_id', 'route_number': 'route_id'})
     
-    # TRANSFORMATION 6 : Convert the Breadcrumb data fields to their respective data types 
+    # TRANSFORMATION 6: Convert the Breadcrumb data fields to their respective data types 
     # defined in schema
     breadcrumb_dataframe['trip_id'] = breadcrumb_dataframe['trip_id'].astype('Int32')
     breadcrumb_dataframe['vehicle_id'] = breadcrumb_dataframe['vehicle_id'].astype('Int32')
@@ -336,23 +338,27 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     breadcrumb_dataframe['latitude'] = breadcrumb_dataframe['latitude'].astype(float)
     breadcrumb_dataframe['longitude'] = breadcrumb_dataframe['longitude'].astype(float)
     
-    breadcrumb_dataframe['speed'] = breadcrumb_dataframe['speed']*2.23694 # change speed from m/s to miles/hr
+    # TRANSFORMATION 7: Change speed from m/s to miles/hr
+    breadcrumb_dataframe['speed'] = breadcrumb_dataframe['speed']*2.23694 
     
     case_num = 0
+    
+    # Validate the breadcrumb data frame against various assertions and update the data frame by dropping
+    # the records that violate the assertions. 
     breadcrumb_dataframe, case_num = existence_assertion(breadcrumb_dataframe, case_num, flag = 1) # assertion 4
     breadcrumb_dataframe, case_num = limit_assertion(breadcrumb_dataframe, case_num) # assertions 5 & 6 & 7
     breadcrumb_dataframe, case_num = summary_assertions(breadcrumb_dataframe, case_num) #assertion 8
     breadcrumb_dataframe, case_num = referential_integrity(breadcrumb_dataframe, case_num, flag = 1) # assertion 10
     breadcrumb_dataframe = breadcrumb_dataframe.drop_duplicates()
     
-    # TRANSFORMATION 4 : Convert the stop data fields to their respective data types defined in schema
+    # TRANSFORMATION 8: Convert the stop data fields to their respective data types defined in schema
     stop_dataframe['trip_id'] = stop_dataframe['trip_id'].astype('Int32')
     stop_dataframe['vehicle_id'] = stop_dataframe['vehicle_id'].astype('Int32')
     stop_dataframe['direction'] = stop_dataframe['direction'].astype(str)
     stop_dataframe['service_key'] = stop_dataframe['service_key'].astype(str)
     stop_dataframe['route_id'] = stop_dataframe['route_id'].astype('Int32')
 
-    # TRANSFORMATION 7 : Create a separate view for TRIP Dataframe and add the route_id, service_key 
+    # TRANSFORMATION 9: Create a separate view for TRIP Dataframe and add the route_id, service_key 
     # and direction columns with NaN values.
     trip_dataframe = breadcrumb_dataframe.filter(['trip_id', 'vehicle_id'])
     breadcrumb_dataframe = breadcrumb_dataframe.drop("vehicle_id", axis = 1)
@@ -364,7 +370,7 @@ def validate(breadcrumb_json_data, stop_event_json_data):
     # trip_dataframe["service_key"] = trip_dataframe["service_key"].astype(str)
     trip_dataframe['route_id'] = trip_dataframe['route_id'].astype('Int32')
 
-    # TRANSFORMATION 4 : Change the value of direction to out and back if its 0 and 1 respectively
+    # TRANSFORMATION 10: Change the value of direction to out and back if its 0 and 1 respectively
     for index in range(len(stop_dataframe['direction'])):
         if stop_dataframe['direction'][index] == '1':
             stop_dataframe['direction'][index] = 'Out'
@@ -373,7 +379,7 @@ def validate(breadcrumb_json_data, stop_event_json_data):
         else:
             stop_dataframe['direction'][index] = 'DELETE'
 
-    # TRANSFORMATION 5: Change W to Weekday, S to Saturday and U to Sunday
+    # TRANSFORMATION 11: Change W to Weekday, S to Saturday and U to Sunday
     for index in range(len(stop_dataframe['service_key'])):
         if stop_dataframe['service_key'][index] == 'W':
             stop_dataframe['service_key'][index] = 'Weekday'
@@ -384,11 +390,14 @@ def validate(breadcrumb_json_data, stop_event_json_data):
         else:
           stop_dataframe['service_key'][index] = 'DELETE'
 
+    # Validate the trip data frame against various assertions and update the data frame by dropping
+    # the records that violate the assertions. 
     trip_dataframe, case_num = existence_assertion(trip_dataframe, case_num, flag = 0) # assertions 1 & 2 & 3
     trip_dataframe, case_num = referential_integrity(trip_dataframe, case_num, flag = 0) # assertion 9
     
     print('\n=====================For each trip id, we have a single route no, service key',\
             'and direction============')
+    # Group the trip data frame based on "trip_id" and remove the duplicates
     groupby_trip = stop_dataframe.groupby('trip_id')
     groups = groupby_trip.groups.keys()
     column_names = ['trip_id', 'vehicle_id', 'route_id', 'direction', 'service_key'] 
@@ -398,9 +407,12 @@ def validate(breadcrumb_json_data, stop_event_json_data):
         groupby_labels = group_dataframe.groupby(['route_id', 'direction', 'service_key'])
         size = max(groupby_labels.size())
         groupby_labels = groupby_labels.filter(lambda label: len(label) == size, dropna = True)
-        final_dataframe = final_dataframe.append(groupby_labels, ignore_index = True)
-    
+        final_dataframe = final_dataframe.append(groupby_labels, ignore_index = True)    
     final_dataframe = final_dataframe.drop_duplicates()
+
+    # Create a new dataframe by performing a left join on trip and stop dataframes 
+    # on columns ['trip_id', 'vehicle_id']. This new dataframe will converted into CSVs
+    # to be loaded into the postgres table
     new_dataframe = trip_dataframe.merge(stop_dataframe, on = ['trip_id', 'vehicle_id'], how = 'left')
     new_dataframe = new_dataframe.drop(new_dataframe.columns[[2, 3, 4]], axis = 1) 
     
