@@ -74,7 +74,8 @@ if __name__ == '__main__':
             print(f'Failed to deliver message: {error}')
         else:
             delivered_records += 1
-            print(f'Produced record to topic {message.topic()} partition [{message.partition()}] @ offset {message.offset()}')
+            print(f"""Produced record to topic {message.topic()} 
+                    partition [{message.partition()}] @ offset {message.offset()}""")
 
     # For all the records in the breadcrumb data, set the json key as 'Breadcrumb'
     # and json value as the record itself. The "key" value will be helpful to consume 
