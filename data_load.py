@@ -8,14 +8,14 @@ import psycopg2.extras
 import pandas as pd
 import numpy as np
 
-DBname = 'postgres'
-DBuser = 'postgres'
-DBpwd = 'postgres'
+db_name = 'postgres'
+db_user = 'postgres'
+db_pwd = 'postgres'
 TableName1 = 'BreadCrumb'
 TableName2 = 'Trip'
 CreateDB = False  # indicates whether the DB table should be (re)-created
 
-def createTable(conn):
+def create_table(conn):
     """
     Create the target table 
     :param conn (object): open connection to a Postgres database (assumes that conn is a valid)
@@ -50,16 +50,16 @@ def createTable(conn):
     print(f'Created {TableName1}')
     print(f'Created {TableName2}')
 
-def dbconnect():
+def db_connect():
     """
     Connect to the Database
     :return connection (Object): connection to the DB server
     """
     connection = psycopg2.connect(
         host = 'localhost',
-        database = DBname,
-        user = DBuser,
-        password = DBpwd,
+        database = db_name,
+        user = db_user,
+        password = db_pwd,
     )
     connection.autocommit = True
     return connection
@@ -83,11 +83,11 @@ def postgres():
     This is the entry point to the code.
     :return: None
     """
-    conn = dbconnect()
+    conn = db_connect()
     csvfile1 = open('Breadcrumbdf.csv', 'r')
     csvfile2 = open('tripdf.csv', 'r')
     if CreateDB:
-        createTable(conn)
+        create_table(conn)
     load(conn, csvfile2, TableName2)
     load(conn, csvfile1, TableName1)
     
