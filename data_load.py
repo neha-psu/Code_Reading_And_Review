@@ -5,31 +5,29 @@ import re
 import csv
 
 import psycopg2.extras
-import pandas as pd
-import numpy as np
 
 db_name = 'postgres'
 db_user = 'postgres'
 db_pwd = 'postgres'
-TableName1 = 'BreadCrumb'
-TableName2 = 'Trip'
-CreateDB = False  # indicates whether the DB table should be (re)-created
+table_name1 = 'BreadCrumb'
+table_name2 = 'Trip'
+create_db = False  # indicates whether the DB table should be (re)-created
 
 def create_table(conn):
     """
     Create the target table 
-    :param conn (object): open connection to a Postgres database (assumes that conn is a valid)
+    :param conn (Object): open connection to a Postgres database (assumes that conn is a valid)
     :return: None
     """
     with conn.cursor() as cursor:
         cursor.execute(f"""
-            DROP TABLE IF EXISTS {TableName2} CASCADE;
-            DROP TABLE IF EXISTS {TableName1};
+            DROP TABLE IF EXISTS {table_name2} CASCADE;
+            DROP TABLE IF EXISTS {table_name1};
             DROP TYPE IF EXISTS service_type;
             DROP TYPE IF EXISTS tripdir_type;
             create type service_type as enum ('Weekday', 'Saturday', 'Sunday');
             create type tripdir_type as enum ('Out', 'Back');
-            create table {TableName2} (
+            create table {table_name2} (
             trip_id integer,
             vehicle_id integer,
             direction tripdir_type,
@@ -37,7 +35,7 @@ def create_table(conn):
             route_id integer,
             PRIMARY KEY (trip_id)
             );
-            create table {TableName1} (
+            create table {table_name1} (
             tstamp timestamp,
             latitude float,
             longitude float,
@@ -47,8 +45,8 @@ def create_table(conn):
             FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
             );
         """)
-    print(f'Created {TableName1}')
-    print(f'Created {TableName2}')
+    print(f'Created {table_name1}')
+    print(f'Created {table_name2}')
 
 def db_connect():
     """
@@ -64,7 +62,7 @@ def db_connect():
     connection.autocommit = True
     return connection
     
-def load(conn, csvfile, table):
+def load(conn, csv_file, table):
     """
     Load the csvfile to the Postgres table
     :param conn (Object): connection object creates a client session with the db server
@@ -74,7 +72,7 @@ def load(conn, csvfile, table):
     """
     with conn.cursor() as cursor:
         start = time.perf_counter()
-        cursor.copy_from(csvfile, table, sep = ',', null = 'None')
+        cursor.copy_from(csv_file, table, sep = ',', null = 'None')
         elapsed = time.perf_counter() - start
         print(f'Finished Loading. Elapsed Time: {elapsed:0.4} seconds')
         
@@ -84,10 +82,10 @@ def postgres():
     :return: None
     """
     conn = db_connect()
-    csvfile1 = open('Breadcrumbdf.csv', 'r')
-    csvfile2 = open('tripdf.csv', 'r')
-    if CreateDB:
+    csv_file1 = open('Breadcrumbdf.csv', 'r')
+    csv_file2 = open('tripdf.csv', 'r')
+    if create_db:
         create_table(conn)
-    load(conn, csvfile2, TableName2)
-    load(conn, csvfile1, TableName1)
+    load(conn, csv_file2, table_name2)
+    load(conn, csv_file1, table_name1)
     
