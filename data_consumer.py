@@ -71,11 +71,11 @@ if __name__ == '__main__':
                 # rebalance and start consuming
                 timeout = 10
                 if flag == 0:
-                    print(f'Waiting for message or event/error in poll()')
+                    print('Waiting for message or event/error in poll()')
                     start = time.time()
                     flag = 1
                 else:
-                    print(f'Waiting for message or event/error in poll()')
+                    print('Waiting for message or event/error in poll()')
 
                 if time.time() > start + timeout:
                     break
