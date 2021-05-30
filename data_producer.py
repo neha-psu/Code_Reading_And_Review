@@ -84,7 +84,8 @@ if __name__ == '__main__':
     for record in breadcrumb_data:
         record_key = 'Breadcrumb'
         record_value = json.dumps(record)
-        producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
+        producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, \
+            on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
         producer.poll(0)
@@ -94,7 +95,8 @@ if __name__ == '__main__':
     for record in stop_event_data:
         record_key = 'stop_event'
         record_value = json.dumps(record)
-        producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, on_delivery = acked)
+        producer.produce(topic, key = record_key.encode('utf-8'), value = record_value, \
+            on_delivery = acked)
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
         producer.poll(0)
